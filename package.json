@@ -17,6 +17,7 @@
     "test:all": "pnpm test && pnpm test:clarinet"
   },
   "dependencies": {
+    "@bitflowlabs/core-sdk": "^2.4.0",
     "@hirosystems/clarinet-sdk": "^3.8.0",
     "@modelcontextprotocol/sdk": "^1.0.0",
     "@stacks/auth": "^7.2.0",
