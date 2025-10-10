@@ -1,353 +1,379 @@
-import { SwapQuote, LiquidityPosition, OrderbookOrder, TransactionResult, TokenInfo } from '../../types/index.js';
+import axios from 'axios';
 
-export class ALEXService {
-  private readonly network: 'mainnet' | 'testnet';
+/**
+ * ALEX Lab Foundation Service
+ * Comprehensive API service for ALEX DEX operations on Stacks
+ * Based on official ALEX API documentation
+ */
+export class AlexService {
   private readonly apiUrl: string;
+  private readonly network: 'mainnet' | 'testnet';
+
+  // ALEX Contract Addresses
+  private readonly contracts = {
+    mainnet: {
+      dao: 'SP3K8BC0PPEVCV7NZ6QSRWPQ2JE9E5B6N3PA0KBR9.executor-dao',
+      vault: 'SP3K8BC0PPEVCV7NZ6QSRWPQ2JE9E5B6N3PA0KBR9.alex-vault',
+      reservePool: 'SP3K8BC0PPEVCV7NZ6QSRWPQ2JE9E5B6N3PA0KBR9.alex-reserve-pool',
+      ammPool: 'SP3K8BC0PPEVCV7NZ6QSRWPQ2JE9E5B6N3PA0KBR9.amm-swap-pool-v1-1',
+      fixedWeightPool: 'SP3K8BC0PPEVCV7NZ6QSRWPQ2JE9E5B6N3PA0KBR9.fixed-weight-pool-v1-01',
+      swapRouter: 'SP3K8BC0PPEVCV7NZ6QSRWPQ2JE9E5B6N3PA0KBR9.swap-helper-v1-03',
+      swapBridge: 'SP3K8BC0PPEVCV7NZ6QSRWPQ2JE9E5B6N3PA0KBR9.swap-helper-bridged',
+      alexToken: 'SP3K8BC0PPEVCV7NZ6QSRWPQ2JE9E5B6N3PA0KBR9.age000-governance-token',
+      autoAlex: 'SP3K8BC0PPEVCV7NZ6QSRWPQ2JE9E5B6N3PA0KBR9.auto-alex'
+    },
+    testnet: {
+      vault: 'ST29E61D211DD0HB0S0JSKZ05X0DSAJS5G5QSTXDX.alex-vault',
+      reservePool: 'ST29E61D211DD0HB0S0JSKZ05X0DSAJS5G5QSTXDX.alex-reserve-pool',
+      fixedWeightPool: 'ST29E61D211DD0HB0S0JSKZ05X0DSAJS5G5QSTXDX.fixed-weight-pool-v1-02',
+      swapHelper: 'ST29E61D211DD0HB0S0JSKZ05X0DSAJS5G5QSTXDX.swap-helper-v1-03',
+      alexToken: 'ST29E61D211DD0HB0S0JSKZ05X0DSAJS5G5QSTXDX.age000-governance-token',
+      autoAlex: 'ST29E61D211DD0HB0S0JSKZ05X0DSAJS5G5QSTXDX.auto-alex'
+    }
+  };
 
   constructor(network: 'mainnet' | 'testnet' = 'mainnet') {
     this.network = network;
-    this.apiUrl = network === 'mainnet' 
-      ? 'https://api.alexlab.co'
-      : 'https://api-testnet.alexlab.co';
+    this.apiUrl = 'https://api.alexgo.io'; // Production API works for both networks
   }
 
-  // AMM Operations
-  async swapTokens(tokenIn: string, tokenOut: string, amountIn: string, slippage: number, walletAddress: string): Promise<TransactionResult> {
-    try {
-      console.log(`ALEX: Swapping ${amountIn} ${tokenIn} for ${tokenOut} with ${slippage}% slippage from ${walletAddress}`);
-      
-      // This would involve creating a contract call to ALEX AMM contracts
-      return {
-        txId: `alex-swap-${Date.now()}`,
-        success: true,
-        data: {
-          tokenIn,
-          tokenOut,
-          amountIn,
-          slippage,
-          protocol: 'ALEX',
-          action: 'swap'
-        }
-      };
-    } catch (error) {
-      return {
-        txId: '',
-        success: false,
-        error: error instanceof Error ? error.message : 'Swap failed'
-      };
-    }
+  // ========================= SWAP OPERATIONS =========================
+
+  /**
+   * Get all available swap pairs with volumes and prices
+   */
+  async getAllSwaps() {
+    const response = await axios.get(`${this.apiUrl}/v1/allswaps`);
+    return response.data;
   }
 
-  async getSwapQuote(tokenIn: string, tokenOut: string, amountIn: string): Promise<SwapQuote> {
-    try {
-      // Query ALEX API for swap quote
-      const response = await fetch(`${this.apiUrl}/v1/quote`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ tokenIn, tokenOut, amountIn })
-      });
+  /**
+   * Get all trading pairs
+   */
+  async getTradingPairs() {
+    const response = await axios.get(`${this.apiUrl}/v1/pairs`);
+    return response.data;
+  }
 
-      if (!response.ok) {
-        throw new Error('Failed to get quote');
+  /**
+   * Get market statistics for all pairs (24h data)
+   */
+  async getAllTickers() {
+    const response = await axios.get(`${this.apiUrl}/v1/tickers`);
+    return response.data;
+  }
+
+  /**
+   * Get market statistics for specific ticker
+   */
+  async getTicker(tickerId: string) {
+    const response = await axios.get(`${this.apiUrl}/v1/ticker/${encodeURIComponent(tickerId)}`);
+    return response.data;
+  }
+
+  /**
+   * Get historical trades for specific pool
+   */
+  async getHistoricalSwaps(poolTokenId: number, limit: number = 1000) {
+    const response = await axios.get(`${this.apiUrl}/v1/historical_swaps/${poolTokenId}`, {
+      params: { limit }
+    });
+    return response.data;
+  }
+
+  // ========================= PRICING DATA =========================
+
+  /**
+   * Get current token price
+   */
+  async getTokenPrice(tokenAddress: string) {
+    const response = await axios.get(`${this.apiUrl}/v1/price/${encodeURIComponent(tokenAddress)}`);
+    return response.data;
+  }
+
+  /**
+   * Get token price history
+   */
+  async getTokenPriceHistory(
+    tokenAddress: string,
+    options: {
+      limit?: number;
+      offset?: number;
+      orderBy?: 'asc' | 'desc';
+      startBlockHeight?: number;
+      endBlockHeight?: number;
+    } = {}
+  ) {
+    const response = await axios.get(`${this.apiUrl}/v1/price_history/${encodeURIComponent(tokenAddress)}`, {
+      params: {
+        limit: options.limit || 10,
+        offset: options.offset || 0,
+        order_by: options.orderBy || 'desc',
+        start_block_height: options.startBlockHeight,
+        end_block_height: options.endBlockHeight
       }
-
-      const data = await response.json();
-      
-      return {
-        tokenIn: { symbol: tokenIn, name: tokenIn, decimals: 6 },
-        tokenOut: { symbol: tokenOut, name: tokenOut, decimals: 6 },
-        amountIn,
-        amountOut: data.amountOut || '0',
-        priceImpact: data.priceImpact || 0,
-        route: data.route || [tokenIn, tokenOut],
-        protocol: 'ALEX'
-      };
-    } catch (error) {
-      // Return mock quote for demonstration
-      return {
-        tokenIn: { symbol: tokenIn, name: tokenIn, decimals: 6 },
-        tokenOut: { symbol: tokenOut, name: tokenOut, decimals: 6 },
-        amountIn,
-        amountOut: (parseInt(amountIn) * 0.98).toString(), // Mock 2% fee
-        priceImpact: 0.1,
-        route: [tokenIn, tokenOut],
-        protocol: 'ALEX'
-      };
-    }
+    });
+    return response.data;
   }
 
-  async addLiquidity(token0: string, token1: string, amount0: string, amount1: string, walletAddress: string): Promise<TransactionResult> {
-    try {
-      console.log(`ALEX: Adding liquidity ${amount0} ${token0} + ${amount1} ${token1} from ${walletAddress}`);
-      
-      return {
-        txId: `alex-add-liq-${Date.now()}`,
-        success: true,
-        data: {
-          token0,
-          token1,
-          amount0,
-          amount1,
-          protocol: 'ALEX',
-          action: 'add-liquidity'
-        }
-      };
-    } catch (error) {
-      return {
-        txId: '',
-        success: false,
-        error: error instanceof Error ? error.message : 'Add liquidity failed'
-      };
-    }
-  }
-
-  async removeLiquidity(token0: string, token1: string, lpTokenAmount: string, walletAddress: string): Promise<TransactionResult> {
-    try {
-      console.log(`ALEX: Removing liquidity ${lpTokenAmount} LP tokens for ${token0}/${token1} from ${walletAddress}`);
-      
-      return {
-        txId: `alex-remove-liq-${Date.now()}`,
-        success: true,
-        data: {
-          token0,
-          token1,
-          lpTokenAmount,
-          protocol: 'ALEX',
-          action: 'remove-liquidity'
-        }
-      };
-    } catch (error) {
-      return {
-        txId: '',
-        success: false,
-        error: error instanceof Error ? error.message : 'Remove liquidity failed'
-      };
-    }
-  }
-
-  // Orderbook Operations
-  async createOrder(type: 'buy' | 'sell', baseToken: string, quoteToken: string, amount: string, price: string | undefined, walletAddress: string): Promise<TransactionResult> {
-    try {
-      const orderType = price ? 'limit' : 'market';
-      console.log(`ALEX: Creating ${orderType} ${type} order for ${amount} ${baseToken}/${quoteToken} ${price ? `at ${price}` : ''} from ${walletAddress}`);
-      
-      return {
-        txId: `alex-order-${Date.now()}`,
-        success: true,
-        data: {
-          type,
-          baseToken,
-          quoteToken,
-          amount,
-          price,
-          orderType,
-          protocol: 'ALEX',
-          action: 'create-order'
-        }
-      };
-    } catch (error) {
-      return {
-        txId: '',
-        success: false,
-        error: error instanceof Error ? error.message : 'Create order failed'
-      };
-    }
-  }
-
-  async cancelOrder(orderId: string, walletAddress: string): Promise<TransactionResult> {
-    try {
-      console.log(`ALEX: Cancelling order ${orderId} from ${walletAddress}`);
-      
-      return {
-        txId: `alex-cancel-${Date.now()}`,
-        success: true,
-        data: {
-          orderId,
-          protocol: 'ALEX',
-          action: 'cancel-order'
-        }
-      };
-    } catch (error) {
-      return {
-        txId: '',
-        success: false,
-        error: error instanceof Error ? error.message : 'Cancel order failed'
-      };
-    }
-  }
-
-  async getOrderbook(baseToken: string, quoteToken: string): Promise<{ bids: OrderbookOrder[], asks: OrderbookOrder[] }> {
-    try {
-      const response = await fetch(`${this.apiUrl}/v1/orderbook/${baseToken}/${quoteToken}`);
-      
-      if (!response.ok) {
-        throw new Error('Failed to fetch orderbook');
+  /**
+   * Get 15-minute price history
+   */
+  async getTokenPriceHistory15Min(
+    tokenAddress: string,
+    startTs: number,
+    endTs: number,
+    options: {
+      limit?: number;
+      offset?: number;
+      orderBy?: 'asc' | 'desc';
+    } = {}
+  ) {
+    const response = await axios.get(`${this.apiUrl}/v1/price_history_15min/${encodeURIComponent(tokenAddress)}`, {
+      params: {
+        start_ts: startTs,
+        end_ts: endTs,
+        limit: options.limit || 10,
+        offset: options.offset || 0,
+        order_by: options.orderBy || 'desc'
       }
-
-      const data = await response.json();
-      return {
-        bids: data.bids || [],
-        asks: data.asks || []
-      };
-    } catch (error) {
-      // Return mock orderbook
-      return {
-        bids: [
-          {
-            id: 'bid-1',
-            type: 'buy',
-            price: '100.00',
-            amount: '1000',
-            filled: '0',
-            status: 'open',
-            timestamp: Date.now()
-          }
-        ],
-        asks: [
-          {
-            id: 'ask-1',
-            type: 'sell',
-            price: '101.00',
-            amount: '1000',
-            filled: '0',
-            status: 'open',
-            timestamp: Date.now()
-          }
-        ]
-      };
-    }
+    });
+    return response.data;
   }
 
-  async getUserOrders(walletAddress: string, status?: string): Promise<OrderbookOrder[]> {
-    try {
-      const url = new URL(`${this.apiUrl}/v1/orders/${walletAddress}`);
-      if (status) {
-        url.searchParams.set('status', status);
-      }
+  // ========================= POOL OPERATIONS =========================
 
-      const response = await fetch(url.toString());
-      
-      if (!response.ok) {
-        throw new Error('Failed to fetch user orders');
-      }
-
-      const data = await response.json();
-      return data.orders || [];
-    } catch (error) {
-      console.error('Error fetching user orders:', error);
-      return [];
-    }
+  /**
+   * Get pool token price
+   */
+  async getPoolTokenPrice(poolTokenId: number) {
+    const response = await axios.get(`${this.apiUrl}/v1/pool_token_price/${poolTokenId}`);
+    return response.data;
   }
 
-  // Launchpad Operations
-  async participateInLaunch(launchId: string, amount: string, walletAddress: string): Promise<TransactionResult> {
-    try {
-      console.log(`ALEX: Participating in launch ${launchId} with ${amount} from ${walletAddress}`);
-      
-      return {
-        txId: `alex-launch-${Date.now()}`,
-        success: true,
-        data: {
-          launchId,
-          amount,
-          protocol: 'ALEX',
-          action: 'participate-launch'
-        }
-      };
-    } catch (error) {
-      return {
-        txId: '',
-        success: false,
-        error: error instanceof Error ? error.message : 'Launch participation failed'
-      };
-    }
+  /**
+   * Get all pool token statistics
+   */
+  async getAllPoolTokenStats() {
+    const response = await axios.get(`${this.apiUrl}/v1/pool_token_stats`);
+    return response.data;
   }
 
-  async getLaunchInfo(launchId: string): Promise<any> {
-    try {
-      const response = await fetch(`${this.apiUrl}/v1/launchpad/${launchId}`);
-      
-      if (!response.ok) {
-        throw new Error('Launch not found');
-      }
-
-      return await response.json();
-    } catch (error) {
-      return {
-        id: launchId,
-        name: 'Sample Launch',
-        token: 'SAMPLE',
-        totalRaise: '1000000',
-        minInvestment: '100',
-        maxInvestment: '10000',
-        startTime: Date.now(),
-        endTime: Date.now() + 86400000,
-        status: 'active'
-      };
-    }
+  /**
+   * Get detailed pool statistics
+   */
+  async getPoolStats(poolTokenId: number, limit: number = 10, offset: number = 0) {
+    const response = await axios.get(`${this.apiUrl}/v1/pool_stats/${poolTokenId}`, {
+      params: { limit, offset }
+    });
+    return response.data;
   }
 
-  // Market Data
-  async getMarketData(token?: string): Promise<any> {
-    try {
-      const url = token 
-        ? `${this.apiUrl}/v1/market/${token}`
-        : `${this.apiUrl}/v1/market`;
-      
-      const response = await fetch(url);
-      
-      if (!response.ok) {
-        throw new Error('Failed to fetch market data');
-      }
-
-      return await response.json();
-    } catch (error) {
-      // Return mock market data
-      return {
-        tokens: [
-          { symbol: 'STX', price: '2.50', change24h: '5.2%', volume24h: '1000000' },
-          { symbol: 'sBTC', price: '70000.00', change24h: '1.1%', volume24h: '500000' },
-          { symbol: 'ALEX', price: '0.15', change24h: '-2.3%', volume24h: '250000' }
-        ]
-      };
-    }
+  /**
+   * Get pool volume history (24h)
+   */
+  async getPoolVolume24h(poolTokenId: number, limit: number = 10, offset: number = 0) {
+    const response = await axios.get(`${this.apiUrl}/v1/volume_24h/${poolTokenId}`, {
+      params: { limit, offset }
+    });
+    return response.data;
   }
 
-  async getYieldCurve(token: string): Promise<any> {
-    try {
-      const response = await fetch(`${this.apiUrl}/v1/yield/${token}`);
-      
-      if (!response.ok) {
-        throw new Error('Failed to fetch yield curve');
-      }
-
-      return await response.json();
-    } catch (error) {
-      return {
-        token,
-        rates: [
-          { duration: '1M', rate: '3.5%' },
-          { duration: '3M', rate: '4.2%' },
-          { duration: '6M', rate: '5.1%' },
-          { duration: '1Y', rate: '6.8%' }
-        ]
-      };
-    }
+  /**
+   * Get pool volume history (7d)
+   */
+  async getPoolVolume7d(poolTokenId: number, limit: number = 10, offset: number = 0) {
+    const response = await axios.get(`${this.apiUrl}/v1/volume_7d/${poolTokenId}`, {
+      params: { limit, offset }
+    });
+    return response.data;
   }
 
-  async getLiquidityPositions(walletAddress: string): Promise<LiquidityPosition[]> {
-    try {
-      const response = await fetch(`${this.apiUrl}/v1/positions/${walletAddress}`);
-      
-      if (!response.ok) {
-        throw new Error('Failed to fetch positions');
-      }
+  /**
+   * Get pool liquidity history
+   */
+  async getPoolLiquidity(poolTokenId: number, limit: number = 10, offset: number = 0) {
+    const response = await axios.get(`${this.apiUrl}/v1/pool_liquidity/${poolTokenId}`, {
+      params: { limit, offset }
+    });
+    return response.data;
+  }
 
-      const data = await response.json();
-      return data.positions || [];
-    } catch (error) {
-      console.error('Error fetching liquidity positions:', error);
-      return [];
-    }
+  /**
+   * Get pool fee history
+   */
+  async getPoolFees(poolTokenId: number, limit: number = 10, offset: number = 0) {
+    const response = await axios.get(`${this.apiUrl}/v1/fee/${poolTokenId}`, {
+      params: { limit, offset }
+    });
+    return response.data;
+  }
+
+  // ========================= TVL & STATISTICS =========================
+
+  /**
+   * Get total TVL across all ALEX pools
+   */
+  async getTotalTVL() {
+    const response = await axios.get(`${this.apiUrl}/v1/stats/tvl`);
+    return response.data;
+  }
+
+  /**
+   * Get TVL for specific token
+   */
+  async getTokenTVL(tokenAddress: string, limit: number = 10, offset: number = 0) {
+    const response = await axios.get(`${this.apiUrl}/v1/stats/tvl/${encodeURIComponent(tokenAddress)}`, {
+      params: { limit, offset }
+    });
+    return response.data;
+  }
+
+  /**
+   * Get total supply for specific token
+   */
+  async getTokenTotalSupply(tokenName: string) {
+    const response = await axios.get(`${this.apiUrl}/v1/stats/total_supply/${tokenName}`);
+    return response.data;
+  }
+
+  /**
+   * Get circulating supply for ALEX governance token
+   */
+  async getAlexCirculatingSupply() {
+    const response = await axios.get(`${this.apiUrl}/v1/stats/circulating_supply/age000-governance-token`);
+    return response.data;
+  }
+
+  // ========================= PUBLIC DATA =========================
+
+  /**
+   * Get all token prices
+   */
+  async getAllTokenPrices() {
+    const response = await axios.get(`${this.apiUrl}/v2/public/token-prices`);
+    return response.data;
+  }
+
+  /**
+   * Get all pool information
+   */
+  async getAllPools() {
+    const response = await axios.get(`${this.apiUrl}/v2/public/pools`);
+    return response.data;
+  }
+
+  /**
+   * Get AMM pool statistics
+   */
+  async getAmmPoolStats() {
+    const response = await axios.get(`${this.apiUrl}/v1/public/amm-pool-stats`);
+    return response.data;
+  }
+
+  /**
+   * Get token mappings
+   */
+  async getTokenMappings() {
+    const response = await axios.get(`${this.apiUrl}/v2/public/token-mappings`);
+    return response.data;
+  }
+
+  // ========================= FLASH LOANS (CONTRACT INTERACTION) =========================
+
+  /**
+   * Prepare flash loan contract call information
+   * Flash loans are executed directly on the vault contract, not through API
+   */
+  prepareFlashLoanContractCall(
+    tokenAddress: string, 
+    amount: string, 
+    userAddress: string,
+    memo?: string
+  ) {
+    const vaultAddress = this.getContractAddress('vault');
+    
+    // Calculate estimated fee (default 0.05% = 5000/100000000)
+    const estimatedFeeRate = 5000; // This should be read from contract
+    const amountBN = BigInt(amount);
+    const feeBN = (amountBN * BigInt(estimatedFeeRate)) / BigInt(100000000);
+    
+    return {
+      contractAddress: vaultAddress,
+      contractName: 'amm-vault-v2-01',
+      functionName: 'flash-loan',
+      functionArgs: [
+        userAddress, // flash-loan-user-trait (must implement flash-loan-trait)
+        tokenAddress, // token-trait
+        amount, // amount (uint)
+        memo || null // memo (optional buff 16)
+      ],
+      requirements: {
+        userMustBeApproved: true,
+        tokenMustBeApproved: true,
+        vaultMustNotBePaused: true,
+        sufficientVaultBalance: true
+      },
+      estimatedFee: {
+        amount: feeBN.toString(),
+        totalRepayment: (amountBN + feeBN).toString(),
+        feeRate: '0.05%'
+      },
+      network: this.network,
+      notes: [
+        'User must implement flash-loan-trait in their contract',
+        'User must be pre-approved by ALEX DAO',
+        'Token must be approved for flash loans',
+        'User contract must repay loan + fee in same transaction'
+      ]
+    };
+  }
+
+  /**
+   * Get flash loan contract information
+   */
+  getFlashLoanContractInfo() {
+    const vaultAddress = this.getContractAddress('vault');
+    
+    return {
+      vaultContract: vaultAddress,
+      contractName: 'amm-vault-v2-01',
+      flashLoanFunction: 'flash-loan',
+      network: this.network,
+      requirements: {
+        approvedUsers: 'Users must be in approved-flash-loan-users datamap',
+        approvedTokens: 'Tokens must be in approved-tokens datamap',
+        vaultStatus: 'Vault must not be paused',
+        userContract: 'User must implement flash-loan-trait',
+        repayment: 'Must repay loan + fee in same transaction'
+      },
+      readOnlyFunctions: {
+        'get-flash-loan-enabled': 'Check if flash loans are enabled',
+        'get-flash-loan-fee-rate': 'Get current fee rate',
+        'get-reserve': 'Check vault reserves for token',
+        'is-paused': 'Check if vault is paused'
+      },
+      constants: {
+        'ONE_8': '100000000', // 8 decimal precision
+        'DEFAULT_FEE_RATE': '5000' // 0.05%
+      }
+    };
+  }
+
+  // ========================= CONTRACT ADDRESSES =========================
+
+  /**
+   * Get contract addresses for current network
+   */
+  getContractAddresses() {
+    return this.contracts[this.network];
+  }
+
+  /**
+   * Get specific contract address
+   */
+  getContractAddress(contractName: keyof typeof this.contracts.mainnet) {
+    const contracts = this.contracts[this.network];
+    return contracts[contractName] || null;
   }
 }
