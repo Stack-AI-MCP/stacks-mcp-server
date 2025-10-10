@@ -28,6 +28,7 @@
     "@stacks/wallet-sdk": "^7.2.0",
     "@velarprotocol/velar-sdk": "^0.7.0-beta",
     "axios": "^1.6.0",
+    "bn.js": "^5.2.2",
     "bns-v2-sdk": "^1.0.0",
     "dotenv": "^16.3.0",
     "vitest-environment-clarinet": "^2.3.0",

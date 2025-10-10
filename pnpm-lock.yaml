@@ -41,6 +41,9 @@ importers:
       axios:
         specifier: ^1.6.0
         version: 1.12.2
+      bn.js:
+        specifier: ^5.2.2
+        version: 5.2.2
       bns-v2-sdk:
         specifier: ^1.0.0
         version: 1.4.3
@@ -974,6 +977,9 @@ packages:
 
   bn.js@4.12.2:
     resolution: {integrity: sha512-n4DSx829VRTRByMRGdjQ9iqsN0Bh4OolPsFnaZBLcbi8iXcB+kJ9s7EnRt4wILZNV3kPLHkRVfOc/HvhC3ovDw==}
+
+  bn.js@5.2.2:
+    resolution: {integrity: sha512-v2YAxEmKaBLahNwE1mjp4WON6huMNeuDvagFZW+ASCuA/ku0bXR9hSMw0XpiqMoA3+rmnyck/tPRSFQkoC9Cuw==}
 
   bns-v2-sdk@1.4.3:
     resolution: {integrity: sha512-jJ09/S/eI+h9HBLo+rZabkQNajYFySC0UXcGSm8hwUcoTX/oqXiYFpdzZN0KoDMHO2P4I18gNY/j/5k+B8FOSg==}
@@ -4149,6 +4155,8 @@ snapshots:
 
   bn.js@4.12.2:
     optional: true
+
+  bn.js@5.2.2: {}
 
   bns-v2-sdk@1.4.3:
     dependencies:
