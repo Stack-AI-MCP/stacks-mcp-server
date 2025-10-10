@@ -1,0 +1,13 @@
+[project]
+name = "stacks-mcp-server"
+description = "Stacks MCP Server for Bitcoin DeFi interactions"
+authors = []
+telemetry = false
+cache_dir = "./.cache"
+
+# We don't need contracts in our MCP server project, but Clarinet requires this structure
+# We can add contracts later if needed for testing purposes
+
+[repl.analysis]
+passes = ["check_checker"]
+check_checker = { trusted_sender = false, trusted_caller = false, callee_filter = false }
