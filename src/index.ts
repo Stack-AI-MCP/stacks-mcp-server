@@ -21,6 +21,7 @@ import { alex } from './plugins/alex/index.js';
 import { bitflow } from './plugins/bitflow/bitflow.plugin.js';
 import { arkadiko } from './plugins/arkadiko/index.js';
 import { charisma } from './plugins/charisma/index.js';
+import { velar } from './plugins/velar/index.js';
 
 // Load environment variables
 dotenv.config();
@@ -69,6 +70,7 @@ async function main() {
       bitflow(),      // Bitflow Protocol stable DEX
       arkadiko(),     // Arkadiko Protocol vaults, DEX, and governance
       charisma(),     // Charisma DEX and Blaze protocol
+      velar(),        // Velar Protocol multi-chain DEX
     ],
   });
 
@@ -132,6 +134,7 @@ async function main() {
   console.error('   • Bitflow: Stable DEX with keeper-based automation');
   console.error('   • Arkadiko: Vaults, stablecoins, DEX, and governance');
   console.error('   • Charisma: Vault-based DEX and Blaze intent protocol');
+  console.error('   • Velar: Multi-chain Bitcoin Layer-2 DEX');
 }
 
 main().catch((error) => {
