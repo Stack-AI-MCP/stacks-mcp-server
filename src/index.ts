@@ -22,6 +22,7 @@ import { bitflow } from './plugins/bitflow/bitflow.plugin.js';
 import { arkadiko } from './plugins/arkadiko/index.js';
 import { charisma } from './plugins/charisma/index.js';
 import { velar } from './plugins/velar/index.js';
+import { granite } from './plugins/granite/index.js';
 
 // Load environment variables
 dotenv.config();
@@ -71,6 +72,7 @@ async function main() {
       arkadiko(),     // Arkadiko Protocol vaults, DEX, and governance
       charisma(),     // Charisma DEX and Blaze protocol
       velar(),        // Velar Protocol multi-chain DEX
+      granite(),      // Granite Protocol BTC lending
     ],
   });
 
@@ -135,6 +137,7 @@ async function main() {
   console.error('   • Arkadiko: Vaults, stablecoins, DEX, and governance');
   console.error('   • Charisma: Vault-based DEX and Blaze intent protocol');
   console.error('   • Velar: Multi-chain Bitcoin Layer-2 DEX');
+  console.error('   • Granite: BTC-native lending with sBTC collateral');
 }
 
 main().catch((error) => {
