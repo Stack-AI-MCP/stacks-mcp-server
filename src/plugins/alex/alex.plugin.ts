@@ -401,80 +401,121 @@ export class AlexPlugin extends PluginBase<StacksWalletClient> {
         }
       ),
 
-      // ========================= WALLET INTEGRATION =========================
+      // ========================= SWAP EXECUTION =========================
 
       createTool(
         {
           name: 'alex_execute_swap',
-          description: 'Execute a token swap on ALEX DEX (requires contract interaction)',
+          description: 'Execute 1-hop token swap on ALEX AMM via swap-helper',
           parameters: z.object({
-            token_from: z.string().describe('Source token contract address'),
-            token_to: z.string().describe('Destination token contract address'),
-            amount_in: z.number().describe('Amount of source token to swap'),
-            min_amount_out: z.number().optional().describe('Minimum amount of destination token expected'),
-            factor: z.number().optional().default(5000).describe('Pool factor (default: 5000)'),
+            token_x: z.string().describe('Input token contract address'),
+            token_y: z.string().describe('Output token contract address'),
+            dx: z.number().positive().describe('Amount of token X to swap'),
+            min_dy: z.number().positive().optional().describe('Minimum amount of token Y expected'),
+            factor: z.number().positive().default(5000).describe('Pool factor (default: 5000)'),
           }),
         },
-        async ({ token_from, token_to, amount_in, min_amount_out, factor }) => {
-          // This would involve creating actual contract calls to ALEX AMM
-          const swapRoute = `${token_from}/${token_to}`;
-          
-          console.error(`🔄 ALEX Swap: ${amount_in} ${token_from} → ${token_to}`);
-          console.error(`📊 Route: ${swapRoute}, Factor: ${factor}`);
-          console.error(`💼 Wallet: ${walletClient.getAddress()}`);
-          
-          return {
-            success: true,
-            message: 'ALEX swap prepared - contract interaction would be executed here',
-            details: {
-              tokenFrom: token_from,
-              tokenTo: token_to,
-              amountIn: amount_in,
-              minAmountOut: min_amount_out,
-              factor,
-              swapRoute,
-              walletAddress: walletClient.getAddress(),
-              network,
-              contractAddress: alexService.getContractAddress('ammPool')
-            }
-          };
+        async ({ token_x, token_y, dx, min_dy, factor }) => {
+          return alexService.prepareSwapExecution({
+            tokenX: token_x,
+            tokenY: token_y,
+            factor,
+            dx,
+            minDy: min_dy
+          });
         }
       ),
 
       createTool(
         {
-          name: 'alex_add_liquidity',
-          description: 'Add liquidity to ALEX pool (requires contract interaction)',
+          name: 'alex_execute_swap_2hop',
+          description: 'Execute 2-hop token swap via swap-helper-a (token-x/token-y -> token-y/token-z)',
           parameters: z.object({
-            token_x: z.string().describe('First token contract address'),
-            token_y: z.string().describe('Second token contract address'),
-            amount_x: z.number().describe('Amount of first token'),
-            amount_y: z.number().describe('Amount of second token'),
-            factor: z.number().optional().default(5000).describe('Pool factor (default: 5000)'),
+            token_x: z.string().describe('Input token contract address'),
+            token_y: z.string().describe('Intermediate token contract address'),
+            token_z: z.string().describe('Output token contract address'),
+            factor_x: z.number().positive().default(5000).describe('Factor for token-x/token-y pool'),
+            factor_y: z.number().positive().default(5000).describe('Factor for token-y/token-z pool'),
+            dx: z.number().positive().describe('Amount of token X to swap'),
+            min_dz: z.number().positive().optional().describe('Minimum amount of token Z expected'),
           }),
         },
-        async ({ token_x, token_y, amount_x, amount_y, factor }) => {
-          const poolPair = `${token_x}/${token_y}`;
-          
-          console.error(`➕ ALEX Add Liquidity: ${amount_x} ${token_x} + ${amount_y} ${token_y}`);
-          console.error(`🏊 Pool: ${poolPair}, Factor: ${factor}`);
-          console.error(`💼 Wallet: ${walletClient.getAddress()}`);
-          
-          return {
-            success: true,
-            message: 'ALEX liquidity addition prepared - contract interaction would be executed here',
-            details: {
-              tokenX: token_x,
-              tokenY: token_y,
-              amountX: amount_x,
-              amountY: amount_y,
-              factor,
-              poolPair,
-              walletAddress: walletClient.getAddress(),
-              network,
-              contractAddress: alexService.getContractAddress('ammPool')
-            }
-          };
+        async ({ token_x, token_y, token_z, factor_x, factor_y, dx, min_dz }) => {
+          return alexService.prepareSwap2Hop({
+            tokenX: token_x,
+            tokenY: token_y,
+            tokenZ: token_z,
+            factorX: factor_x,
+            factorY: factor_y,
+            dx,
+            minDz: min_dz
+          });
+        }
+      ),
+
+      createTool(
+        {
+          name: 'alex_execute_swap_3hop',
+          description: 'Execute 3-hop token swap via swap-helper-b (X->Y->Z->W)',
+          parameters: z.object({
+            token_x: z.string().describe('Input token contract address'),
+            token_y: z.string().describe('First intermediate token'),
+            token_z: z.string().describe('Second intermediate token'),
+            token_w: z.string().describe('Output token contract address'),
+            factor_x: z.number().positive().default(5000).describe('Factor for X/Y pool'),
+            factor_y: z.number().positive().default(5000).describe('Factor for Y/Z pool'),
+            factor_z: z.number().positive().default(5000).describe('Factor for Z/W pool'),
+            dx: z.number().positive().describe('Amount of token X to swap'),
+            min_dw: z.number().positive().optional().describe('Minimum amount of token W expected'),
+          }),
+        },
+        async ({ token_x, token_y, token_z, token_w, factor_x, factor_y, factor_z, dx, min_dw }) => {
+          return alexService.prepareSwap3Hop({
+            tokenX: token_x,
+            tokenY: token_y,
+            tokenZ: token_z,
+            tokenW: token_w,
+            factorX: factor_x,
+            factorY: factor_y,
+            factorZ: factor_z,
+            dx,
+            minDw: min_dw
+          });
+        }
+      ),
+
+      createTool(
+        {
+          name: 'alex_execute_swap_4hop',
+          description: 'Execute 4-hop token swap via swap-helper-c (X->Y->Z->W->V)',
+          parameters: z.object({
+            token_x: z.string().describe('Input token contract address'),
+            token_y: z.string().describe('First intermediate token'),
+            token_z: z.string().describe('Second intermediate token'),
+            token_w: z.string().describe('Third intermediate token'),
+            token_v: z.string().describe('Output token contract address'),
+            factor_x: z.number().positive().default(5000).describe('Factor for X/Y pool'),
+            factor_y: z.number().positive().default(5000).describe('Factor for Y/Z pool'),
+            factor_z: z.number().positive().default(5000).describe('Factor for Z/W pool'),
+            factor_w: z.number().positive().default(5000).describe('Factor for W/V pool'),
+            dx: z.number().positive().describe('Amount of token X to swap'),
+            min_dv: z.number().positive().optional().describe('Minimum amount of token V expected'),
+          }),
+        },
+        async ({ token_x, token_y, token_z, token_w, token_v, factor_x, factor_y, factor_z, factor_w, dx, min_dv }) => {
+          return alexService.prepareSwap4Hop({
+            tokenX: token_x,
+            tokenY: token_y,
+            tokenZ: token_z,
+            tokenW: token_w,
+            tokenV: token_v,
+            factorX: factor_x,
+            factorY: factor_y,
+            factorZ: factor_z,
+            factorW: factor_w,
+            dx,
+            minDv: min_dv
+          });
         }
       ),
     ];

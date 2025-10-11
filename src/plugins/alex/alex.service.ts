@@ -25,6 +25,7 @@ export class AlexService {
     testnet: {
       vault: 'ST29E61D211DD0HB0S0JSKZ05X0DSAJS5G5QSTXDX.alex-vault',
       reservePool: 'ST29E61D211DD0HB0S0JSKZ05X0DSAJS5G5QSTXDX.alex-reserve-pool',
+      ammPool: 'ST29E61D211DD0HB0S0JSKZ05X0DSAJS5G5QSTXDX.amm-swap-pool-v1-1',
       fixedWeightPool: 'ST29E61D211DD0HB0S0JSKZ05X0DSAJS5G5QSTXDX.fixed-weight-pool-v1-02',
       swapHelper: 'ST29E61D211DD0HB0S0JSKZ05X0DSAJS5G5QSTXDX.swap-helper-v1-03',
       alexToken: 'ST29E61D211DD0HB0S0JSKZ05X0DSAJS5G5QSTXDX.age000-governance-token',
@@ -375,5 +376,151 @@ export class AlexService {
   getContractAddress(contractName: keyof typeof this.contracts.mainnet) {
     const contracts = this.contracts[this.network];
     return contracts[contractName] || null;
+  }
+
+  // ========================= SWAP EXECUTION =========================
+
+  /**
+   * Prepare swap execution parameters for 1-hop swap
+   * Returns contract call information for swap-helper
+   */
+  prepareSwapExecution(params: {
+    tokenX: string;
+    tokenY: string;
+    factor: number;
+    dx: number;
+    minDy?: number;
+  }) {
+    const ammPoolContract = this.contracts[this.network].ammPool;
+    const [contractAddress, contractName] = ammPoolContract.split('.');
+
+    return {
+      contractAddress,
+      contractName,
+      functionName: 'swap-helper',
+      functionArgs: {
+        tokenX: params.tokenX,
+        tokenY: params.tokenY,
+        factor: params.factor,
+        dx: params.dx,
+        minDy: params.minDy || null
+      },
+      network: this.network,
+      note: 'Execute swap via ALEX AMM Pool contract'
+    };
+  }
+
+  /**
+   * Prepare 2-hop swap execution (token-x/token-y -> token-y/token-z)
+   * Returns contract call information for swap-helper-a
+   */
+  prepareSwap2Hop(params: {
+    tokenX: string;
+    tokenY: string;
+    tokenZ: string;
+    factorX: number;
+    factorY: number;
+    dx: number;
+    minDz?: number;
+  }) {
+    const ammPoolContract = this.contracts[this.network].ammPool;
+    const [contractAddress, contractName] = ammPoolContract.split('.');
+
+    return {
+      contractAddress,
+      contractName,
+      functionName: 'swap-helper-a',
+      functionArgs: {
+        tokenX: params.tokenX,
+        tokenY: params.tokenY,
+        tokenZ: params.tokenZ,
+        factorX: params.factorX,
+        factorY: params.factorY,
+        dx: params.dx,
+        minDz: params.minDz || null
+      },
+      network: this.network,
+      note: 'Execute 2-hop swap via ALEX AMM Pool contract'
+    };
+  }
+
+  /**
+   * Prepare 3-hop swap execution (token-x/token-y -> token-y/token-z -> token-z/token-w)
+   * Returns contract call information for swap-helper-b
+   */
+  prepareSwap3Hop(params: {
+    tokenX: string;
+    tokenY: string;
+    tokenZ: string;
+    tokenW: string;
+    factorX: number;
+    factorY: number;
+    factorZ: number;
+    dx: number;
+    minDw?: number;
+  }) {
+    const ammPoolContract = this.contracts[this.network].ammPool;
+    const [contractAddress, contractName] = ammPoolContract.split('.');
+
+    return {
+      contractAddress,
+      contractName,
+      functionName: 'swap-helper-b',
+      functionArgs: {
+        tokenX: params.tokenX,
+        tokenY: params.tokenY,
+        tokenZ: params.tokenZ,
+        tokenW: params.tokenW,
+        factorX: params.factorX,
+        factorY: params.factorY,
+        factorZ: params.factorZ,
+        dx: params.dx,
+        minDw: params.minDw || null
+      },
+      network: this.network,
+      note: 'Execute 3-hop swap via ALEX AMM Pool contract'
+    };
+  }
+
+  /**
+   * Prepare 4-hop swap execution (token-x/token-y -> ... -> token-w/token-v)
+   * Returns contract call information for swap-helper-c
+   */
+  prepareSwap4Hop(params: {
+    tokenX: string;
+    tokenY: string;
+    tokenZ: string;
+    tokenW: string;
+    tokenV: string;
+    factorX: number;
+    factorY: number;
+    factorZ: number;
+    factorW: number;
+    dx: number;
+    minDv?: number;
+  }) {
+    const ammPoolContract = this.contracts[this.network].ammPool;
+    const [contractAddress, contractName] = ammPoolContract.split('.');
+
+    return {
+      contractAddress,
+      contractName,
+      functionName: 'swap-helper-c',
+      functionArgs: {
+        tokenX: params.tokenX,
+        tokenY: params.tokenY,
+        tokenZ: params.tokenZ,
+        tokenW: params.tokenW,
+        tokenV: params.tokenV,
+        factorX: params.factorX,
+        factorY: params.factorY,
+        factorZ: params.factorZ,
+        factorW: params.factorW,
+        dx: params.dx,
+        minDv: params.minDv || null
+      },
+      network: this.network,
+      note: 'Execute 4-hop swap via ALEX AMM Pool contract'
+    };
   }
 }
