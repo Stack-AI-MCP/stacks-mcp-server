@@ -17,6 +17,10 @@ import { blocks } from './plugins/blocks/blocks.plugin.js';
 import { mempool } from './plugins/mempool/mempool.plugin.js';
 import { stackpool } from './plugins/stackpool/stackpool.plugin.js';
 import { events } from './plugins/events/events.plugin.js';
+import { alex } from './plugins/alex/index.js';
+import { bitflow } from './plugins/bitflow/bitflow.plugin.js';
+import { arkadiko } from './plugins/arkadiko/index.js';
+import { charisma } from './plugins/charisma/index.js';
 
 // Load environment variables
 dotenv.config();
@@ -61,6 +65,10 @@ async function main() {
       mempool(),      // Mempool operations and fee estimation
       stackpool(),    // Stacking pool delegations and burnchain rewards
       events(),       // Transaction events and detailed analysis
+      alex(),         // ALEX Protocol DEX and AMM
+      bitflow(),      // Bitflow Protocol stable DEX
+      arkadiko(),     // Arkadiko Protocol vaults, DEX, and governance
+      charisma(),     // Charisma DEX and Blaze protocol
     ],
   });
 
@@ -120,6 +128,10 @@ async function main() {
   console.error('   • Mempool: Mempool statistics and fee estimation');
   console.error('   • StackPool: Pool delegations and burnchain rewards');
   console.error('   • Events: Transaction events and detailed analysis');
+  console.error('   • ALEX: DEX, AMM, and liquidity operations');
+  console.error('   • Bitflow: Stable DEX with keeper-based automation');
+  console.error('   • Arkadiko: Vaults, stablecoins, DEX, and governance');
+  console.error('   • Charisma: Vault-based DEX and Blaze intent protocol');
 }
 
 main().catch((error) => {
