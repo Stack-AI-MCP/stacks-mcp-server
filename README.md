@@ -97,6 +97,8 @@ graph TB
 
 ### Architecture Overview
 
+![Stacks AI Architecture](docs/images/stacksAiArchitecture.png)
+
 ```mermaid
 graph TB
     subgraph "AI Layer"
@@ -170,6 +172,8 @@ graph TB
 ## Supported Protocols
 
 ### Protocol Integration Map
+
+![Stacks AI Protocols](docs/images/stacksAiProtocols.png)
 
 ```mermaid
 graph TB
@@ -596,6 +600,8 @@ src/plugins/
 
 ### Plugin System Architecture
 
+![Stacks AI Plugin Architecture](docs/images/stacksAiPluginArchitecture.png)
+
 ```mermaid
 graph LR
     subgraph "Plugin Base"
@@ -633,6 +639,8 @@ graph LR
 ```
 
 ### Core Components
+
+![Stacks AI Components](docs/images/StacksAiComponents.png)
 
 ```mermaid
 graph TB
@@ -681,6 +689,8 @@ graph TB
 
 ### Transaction Flow
 
+![Stacks AI Transaction Flow](docs/images/stacksAiTransactionFlow.png)
+
 ```mermaid
 sequenceDiagram
     participant AI as AI Agent
@@ -711,6 +721,8 @@ sequenceDiagram
 ```
 
 ### Data Flow
+
+![Stacks AI Data Flow](docs/images/stacksAIDataFlow.png)
 
 ```mermaid
 graph LR
