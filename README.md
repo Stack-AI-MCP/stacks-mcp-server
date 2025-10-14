@@ -1,12 +1,236 @@
-# Stacks MCP Server
+# Stacks AI ~ MCP Server
 
-Comprehensive Model Context Protocol (MCP) server for the Stacks Bitcoin Layer 2 DeFi ecosystem. Provides unified access to 6 major DeFi protocols with over 100 professional tools for lending, trading, staking, and governance operations.
+![Stacks AI Banner](docs/images/stacksAIBanner.png)
+
+Comprehensive Model Context Protocol (MCP) server for the Stacks Bitcoin Layer 2 DeFi ecosystem. Part of the **Stacks AI** project, providing unified access to 6 major DeFi protocols with over 144+ professional tools for lending, trading, staking, and governance operations.
+
+[![Protocol Coverage](https://img.shields.io/badge/Protocols-7-blue)](stacks-mcp-server/README.md#supported-protocols)
+[![Tools](https://img.shields.io/badge/Tools-144+-green)](stacks-mcp-server/README.md#tool-categories)
+[![Networks](https://img.shields.io/badge/Networks-Mainnet%20%7C%20Testnet%20%7C%20Devnet-orange)](stacks-mcp-server/README.md#network-endpoints)
+[![MCP](https://img.shields.io/badge/MCP-Compliant-purple)](stacks-mcp-server/README.md#mcp-protocol-compliance)
+
+---
+
+## Table of Contents
+
+- [Overview](#overview)
+  - [Stacks AI Ecosystem](#stacks-ai-ecosystem)
+  - [Architecture Overview](#architecture-overview)
+- [Supported Protocols](#supported-protocols)
+- [Quick Start](#quick-start)
+  - [Prerequisites](#prerequisites)
+  - [Installation](#installation)
+  - [Environment Configuration](#environment-configuration)
+- [Usage Examples](#usage-examples)
+- [Architecture](#architecture)
+  - [Plugin System](#plugin-based-system)
+  - [Core Components](#core-components)
+  - [Transaction Flow](#transaction-flow)
+- [API Integration](#api-integration)
+- [Development](#development)
+- [Testing](#testing)
+- [Security Considerations](#security-considerations)
+- [MCP Protocol Compliance](#mcp-protocol-compliance)
+- [Troubleshooting](#troubleshooting)
+- [Project Statistics](#project-statistics)
+
+---
 
 ## Overview
 
-This MCP server enables AI agents and applications to interact with the entire Stacks DeFi ecosystem through a standardized protocol interface. Built for the Stacks Vibe Coding Hackathon, it integrates with all major Bitcoin DeFi protocols on Stacks.
+Stacks AI MCP Server enables AI agents and applications to interact with the entire Stacks DeFi ecosystem through a standardized protocol interface. It integrates with all major Bitcoin DeFi protocols on Stacks, enabling natural language interactions with Bitcoin DeFi.
+
+### Stacks AI Ecosystem
+
+The Stacks AI project consists of two main components:
+
+1. **MCP Server** (this repository) - Backend protocol integration exposing Bitcoin DeFi operations
+2. **Frontend** (separate repository) - Chat-based user interface with Stacks wallet integration
+
+```mermaid
+graph TB
+    subgraph "User Interface Layer"
+        A[Web Browser]
+        B[Stacks AI Frontend<br/>Next.js Chat Interface]
+        C[Wallet Connection<br/>Leather/Xverse]
+    end
+
+    subgraph "AI Processing Layer"
+        D[Claude Desktop]
+        E[AI Agent Processing]
+        F[Natural Language<br/>Understanding]
+    end
+
+    subgraph "Backend Layer"
+        G[Stacks AI MCP Server<br/>144+ Tools]
+        H[Plugin System<br/>6 DeFi Protocols]
+        I[Wallet Authentication<br/>Transaction Signing]
+    end
+
+    subgraph "Blockchain Layer"
+        J[Stacks Network<br/>Bitcoin L2]
+        K[Smart Contracts<br/>Clarity]
+        L[Protocol APIs<br/>REST/SDK]
+    end
+
+    A --> B
+    B --> C
+    B --> D
+    D --> E
+    E --> F
+    F --> G
+    G --> H
+    H --> I
+    I --> J
+    I --> K
+    I --> L
+
+    C --> I
+
+    style A fill:#e1f5ff
+    style B fill:#e1f5ff
+    style D fill:#ffe1f5
+    style G fill:#fff4e1
+    style H fill:#e1ffe1
+    style J fill:#f5e1ff
+```
+
+### Architecture Overview
+
+```mermaid
+graph TB
+    subgraph "AI Layer"
+        A[Claude Desktop/Cursor/VS Code]
+        B[Natural Language Input]
+    end
+
+    subgraph "MCP Server"
+        C[MCP Protocol Handler]
+        D[Plugin Manager]
+        E[Wallet Client]
+        F[Config Manager]
+    end
+
+    subgraph "Protocol Plugins"
+        G1[ALEX Plugin<br/>34 Tools]
+        G2[Bitflow Plugin<br/>29 Tools]
+        G3[Arkadiko Plugin<br/>28 Tools]
+        G4[Charisma Plugin<br/>14 Tools]
+        G5[Velar Plugin<br/>18 Tools]
+        G6[Granite Plugin<br/>21 Tools]
+        G7[Stacks Core Plugin<br/>40+ Tools]
+    end
+
+    subgraph "Blockchain Layer"
+        H1[Stacks Network]
+        H2[ALEX API]
+        H3[Velar SDK]
+        H4[Protocol Contracts]
+        H5[Hiro API]
+    end
+
+    A --> B
+    B --> C
+    C --> D
+    D --> E
+    E --> F
+
+    D --> G1
+    D --> G2
+    D --> G3
+    D --> G4
+    D --> G5
+    D --> G6
+    D --> G7
+
+    G1 --> H2
+    G1 --> H1
+    G2 --> H1
+    G3 --> H1
+    G4 --> H1
+    G5 --> H3
+    G5 --> H1
+    G6 --> H1
+    G7 --> H5
+    G7 --> H4
+
+    style A fill:#e1f5ff
+    style C fill:#fff4e1
+    style D fill:#ffe1f5
+    style G1 fill:#e1ffe1
+    style G2 fill:#e1ffe1
+    style G3 fill:#e1ffe1
+    style G4 fill:#e1ffe1
+    style G5 fill:#e1ffe1
+    style G6 fill:#e1ffe1
+    style G7 fill:#e1ffe1
+    style H1 fill:#f5e1ff
+```
 
 ## Supported Protocols
+
+### Protocol Integration Map
+
+```mermaid
+graph TB
+    subgraph "Stacks AI MCP Server"
+        Core[Core Engine]
+    end
+
+    subgraph "DeFi Protocols"
+        ALEX[ALEX Protocol<br/>AMM & DEX<br/>34 Tools]
+        Bitflow[Bitflow Protocol<br/>Stable DEX<br/>29 Tools]
+        Arkadiko[Arkadiko Protocol<br/>Lending & USDA<br/>28 Tools]
+        Charisma[Charisma Protocol<br/>Composable Vaults<br/>14 Tools]
+        Velar[Velar Protocol<br/>Multi-chain DEX<br/>18 Tools]
+        Granite[Granite Protocol<br/>BTC Lending<br/>21 Tools]
+    end
+
+    subgraph "Core Operations"
+        Contracts[Smart Contracts<br/>Deploy & Interact]
+        Transactions[Transactions<br/>Query & Track]
+        PoX[PoX Stacking<br/>STX Rewards]
+        Tokens[Token Operations<br/>Transfer & Balance]
+        NFT[NFT Operations<br/>Mint & Transfer]
+        Blocks[Blockchain Data<br/>Blocks & Events]
+    end
+
+    Core --> ALEX
+    Core --> Bitflow
+    Core --> Arkadiko
+    Core --> Charisma
+    Core --> Velar
+    Core --> Granite
+    Core --> Contracts
+    Core --> Transactions
+    Core --> PoX
+    Core --> Tokens
+    Core --> NFT
+    Core --> Blocks
+
+    ALEX --> |Swaps, Liquidity| StacksNet[Stacks Network]
+    Bitflow --> |Stable Swaps, DCA| StacksNet
+    Arkadiko --> |Vaults, Loans| StacksNet
+    Charisma --> |Blaze Intents| StacksNet
+    Velar --> |Cross-chain Swaps| StacksNet
+    Granite --> |sBTC Lending| StacksNet
+
+    Contracts --> StacksNet
+    Transactions --> StacksNet
+    PoX --> StacksNet
+    Tokens --> StacksNet
+    NFT --> StacksNet
+    Blocks --> StacksNet
+
+    style Core fill:#e1f5ff
+    style ALEX fill:#e1ffe1
+    style Bitflow fill:#e1ffe1
+    style Arkadiko fill:#e1ffe1
+    style Charisma fill:#e1ffe1
+    style Velar fill:#e1ffe1
+    style Granite fill:#e1ffe1
+    style StacksNet fill:#f5e1ff
+```
 
 ### ALEX Protocol
 Automated Market Maker (AMM) and DEX with multi-hop routing capabilities.
@@ -370,21 +594,149 @@ src/plugins/
 └── ...            # Additional core plugins
 ```
 
+### Plugin System Architecture
+
+```mermaid
+graph LR
+    subgraph "Plugin Base"
+        A[PluginBase<br/>Abstract Class]
+        B[Tool Factory]
+        C[Validation Layer]
+    end
+
+    subgraph "Protocol Plugin"
+        D[Plugin Implementation]
+        E[Service Layer]
+        F[API Integration]
+        G[Contract Interface]
+    end
+
+    subgraph "Tool Registration"
+        H[Tool Definition]
+        I[Parameter Schema]
+        J[Tool Handler]
+    end
+
+    A --> D
+    B --> H
+    C --> I
+    D --> E
+    E --> F
+    E --> G
+    H --> J
+    I --> J
+
+    style A fill:#e1f5ff
+    style D fill:#ffe1e1
+    style E fill:#e1ffe1
+    style H fill:#fff4e1
+```
+
 ### Core Components
 
-- **PluginBase**: Abstract base class for all protocol plugins
-- **ToolBase**: Factory for creating MCP tools with validation
-- **StacksWalletClient**: Unified wallet interface for transaction signing
-- **Services**: Protocol-specific business logic and API integration
-- **Config**: Centralized configuration management
+```mermaid
+graph TB
+    subgraph "Core Layer"
+        A[PluginBase<br/>Abstract base class]
+        B[ToolBase<br/>Tool factory]
+        C[StacksWalletClient<br/>Wallet interface]
+        D[Config Manager<br/>Environment config]
+    end
+
+    subgraph "Service Layer"
+        E[Protocol Services<br/>Business logic]
+        F[API Clients<br/>External APIs]
+        G[Contract Handlers<br/>Smart contracts]
+    end
+
+    subgraph "Integration Layer"
+        H[Hiro API<br/>Blockchain data]
+        I[Protocol APIs<br/>ALEX, Velar, etc.]
+        J[Stacks Network<br/>Contract calls]
+    end
+
+    A --> E
+    B --> E
+    C --> E
+    D --> E
+
+    E --> F
+    E --> G
+
+    F --> H
+    F --> I
+    G --> J
+
+    style A fill:#e1f5ff
+    style B fill:#e1f5ff
+    style C fill:#e1f5ff
+    style D fill:#e1f5ff
+    style E fill:#e1ffe1
+    style F fill:#e1ffe1
+    style G fill:#e1ffe1
+    style H fill:#ffe1f5
+    style I fill:#ffe1f5
+    style J fill:#ffe1f5
+```
 
 ### Transaction Flow
 
-1. Tool receives parameters from AI agent/application
-2. Service layer validates and prepares contract call parameters
-3. Contract call data returned to caller
-4. Caller handles transaction signing and broadcasting
-5. Transaction confirmation tracked via Stacks API
+```mermaid
+sequenceDiagram
+    participant AI as AI Agent
+    participant MCP as MCP Server
+    participant Plugin as Protocol Plugin
+    participant Service as Service Layer
+    participant Wallet as Wallet Client
+    participant Network as Stacks Network
+
+    AI->>MCP: Natural Language Request
+    MCP->>Plugin: Route to Tool Handler
+    Plugin->>Service: Validate & Prepare
+    Service->>Service: Build Contract Call
+    Service->>Plugin: Return Contract Call Data
+    Plugin->>MCP: Return Unsigned Transaction
+    MCP->>AI: Transaction Details
+
+    Note over AI,Wallet: User/Client Signs Transaction
+
+    AI->>Wallet: Sign Transaction
+    Wallet->>Network: Broadcast Transaction
+    Network->>Wallet: Transaction ID
+    Wallet->>AI: Confirmation
+    AI->>MCP: Query Transaction Status
+    MCP->>Network: Check Status
+    Network->>MCP: Transaction Result
+    MCP->>AI: Final Status
+```
+
+### Data Flow
+
+```mermaid
+graph LR
+    subgraph "Input"
+        A[Natural Language] --> B[MCP Request]
+    end
+
+    subgraph "Processing"
+        B --> C[Tool Router]
+        C --> D[Parameter Validation]
+        D --> E[Service Execution]
+        E --> F[API/Contract Call]
+    end
+
+    subgraph "Output"
+        F --> G[Response Formatting]
+        G --> H[MCP Response]
+        H --> I[AI-Readable Result]
+    end
+
+    style A fill:#e1f5ff
+    style C fill:#ffe1e1
+    style E fill:#e1ffe1
+    style F fill:#fff4e1
+    style I fill:#f5e1ff
+```
 
 ## Tool Categories
 
@@ -436,6 +788,80 @@ The server integrates with multiple data sources:
 - **Pyth Network**: Price oracle data for Granite
 - **Direct Contract Calls**: Real-time on-chain data
 
+### Integration Architecture
+
+```mermaid
+graph TB
+    subgraph "MCP Server"
+        A[Tool Handler]
+        B[Service Layer]
+    end
+
+    subgraph "External APIs"
+        C[Hiro API<br/>Blockchain Data]
+        D[ALEX API<br/>DEX Analytics]
+        E[Velar SDK<br/>Multi-chain DEX]
+        F[Bitflow SDK<br/>Stable DEX]
+    end
+
+    subgraph "Blockchain"
+        G[Stacks Network<br/>Contract Calls]
+        H[Protocol Contracts<br/>Read/Write]
+        I[Pyth Oracles<br/>Price Feeds]
+    end
+
+    A --> B
+    B --> C
+    B --> D
+    B --> E
+    B --> F
+    B --> G
+    G --> H
+    G --> I
+
+    style A fill:#e1f5ff
+    style B fill:#ffe1e1
+    style C fill:#e1ffe1
+    style D fill:#e1ffe1
+    style E fill:#e1ffe1
+    style F fill:#e1ffe1
+    style G fill:#fff4e1
+    style H fill:#f5e1ff
+    style I fill:#f5e1ff
+```
+
+### API Integration Patterns
+
+Each protocol plugin follows a consistent integration pattern:
+
+```mermaid
+sequenceDiagram
+    participant Tool as MCP Tool
+    participant Service as Protocol Service
+    participant API as External API
+    participant Contract as Smart Contract
+    participant Cache as Response Cache
+
+    Tool->>Service: Execute Operation
+    Service->>Service: Validate Parameters
+
+    alt Read Operation
+        Service->>Cache: Check Cache
+        alt Cache Hit
+            Cache->>Service: Return Cached Data
+        else Cache Miss
+            Service->>API: Fetch Data
+            API->>Service: Return Data
+            Service->>Cache: Update Cache
+        end
+    else Write Operation
+        Service->>Contract: Build Contract Call
+        Contract->>Service: Return Call Data
+    end
+
+    Service->>Tool: Return Result
+```
+
 ## Security Considerations
 
 ### Private Key Management
@@ -460,6 +886,77 @@ The server integrates with multiple data sources:
 - Monitor API usage to avoid rate limit issues
 
 ## Development
+
+### Development Workflow
+
+```mermaid
+graph LR
+    subgraph "Development"
+        A[Write Plugin Code] --> B[Add Unit Tests]
+        B --> C[Type Check]
+        C --> D[Run Tests]
+    end
+
+    subgraph "Integration"
+        D --> E[Register Plugin]
+        E --> F[Build Server]
+        F --> G[Test with MCP Client]
+    end
+
+    subgraph "Deployment"
+        G --> H[Configure AI App]
+        H --> I[Test End-to-End]
+        I --> J[Deploy to Production]
+    end
+
+    style A fill:#e1f5ff
+    style D fill:#e1ffe1
+    style F fill:#fff4e1
+    style I fill:#ffe1f5
+    style J fill:#f5e1ff
+```
+
+### Testing Strategy
+
+```mermaid
+graph TB
+    subgraph "Unit Tests"
+        A[Service Logic Tests]
+        B[Parameter Validation]
+        C[Mock API Responses]
+    end
+
+    subgraph "Integration Tests"
+        D[Clarinet Contract Tests]
+        E[Plugin Integration]
+        F[End-to-End Flows]
+    end
+
+    subgraph "Manual Testing"
+        G[Claude Desktop Testing]
+        H[Real Network Operations]
+        I[Protocol Verification]
+    end
+
+    A --> D
+    B --> D
+    C --> D
+    D --> G
+    E --> G
+    F --> G
+    G --> I
+    H --> I
+
+    style A fill:#e1f5ff
+    style B fill:#e1f5ff
+    style C fill:#e1f5ff
+    style D fill:#e1ffe1
+    style E fill:#e1ffe1
+    style F fill:#e1ffe1
+    style G fill:#fff4e1
+    style H fill:#fff4e1
+    style I fill:#f5e1ff
+```
 
 ### Adding New Tools
 
@@ -525,6 +1022,70 @@ This server implements the Model Context Protocol specification:
 - **Structured Responses**: All responses follow MCP format
 - **Error Handling**: Proper error codes and messages
 
+### MCP Communication Flow
+
+```mermaid
+sequenceDiagram
+    participant Client as MCP Client<br/>(Claude/Cursor)
+    participant Server as Stacks AI<br/>MCP Server
+    participant Plugin as Protocol Plugin
+    participant Network as Stacks Network
+
+    Client->>Server: initialize
+    Server->>Client: serverInfo + capabilities
+
+    Client->>Server: tools/list
+    Server->>Plugin: getAllTools()
+    Plugin->>Server: 144+ Tool Definitions
+    Server->>Client: Tool List
+
+    Client->>Server: tools/call<br/>(tool: swap_tokens)
+    Server->>Plugin: validateParameters()
+    Plugin->>Plugin: buildContractCall()
+    Plugin->>Server: Contract Call Data
+    Server->>Client: Success Response
+
+    Note over Client,Network: Client signs & broadcasts transaction
+
+    Client->>Server: tools/call<br/>(tool: check_transaction)
+    Server->>Network: Query Transaction
+    Network->>Server: Transaction Status
+    Server->>Client: Status Response
+```
+
+### Tool Schema Example
+
+Each tool follows a consistent schema pattern:
+
+```mermaid
+graph LR
+    subgraph "Tool Definition"
+        A[Tool Name] --> B[Description]
+        B --> C[Parameter Schema]
+        C --> D[Handler Function]
+    end
+
+    subgraph "Parameter Schema"
+        E[Required Params] --> F[Optional Params]
+        F --> G[Type Validation]
+        G --> H[Custom Validators]
+    end
+
+    subgraph "Handler Execution"
+        I[Receive Parameters] --> J[Validate Input]
+        J --> K[Execute Service]
+        K --> L[Format Response]
+    end
+
+    D --> I
+
+    style A fill:#e1f5ff
+    style C fill:#e1ffe1
+    style D fill:#fff4e1
+    style I fill:#ffe1f5
+    style L fill:#f5e1ff
+```
+
 ## Troubleshooting
 
 ### Common Issues
@@ -565,7 +1126,7 @@ MIT License - see LICENSE file for details
 
 ## Acknowledgments
 
-Built for the Stacks Vibe Coding Hackathon. Special thanks to:
+Special thanks to:
 
 - Stacks Foundation for the Bitcoin L2 infrastructure
 - Hiro Systems for comprehensive blockchain APIs
@@ -579,8 +1140,116 @@ For issues, questions, or contributions:
 - Review documentation in `/docs` directory
 - Check protocol-specific documentation for integration details
 
+## Project Statistics
+
+### Coverage Overview
+
+```mermaid
+pie title "Tool Distribution by Category"
+    "ALEX Protocol" : 34
+    "Bitflow Protocol" : 29
+    "Arkadiko Protocol" : 28
+    "Velar Protocol" : 18
+    "Granite Protocol" : 21
+    "Charisma Protocol" : 14
+    "Core Operations" : 40
+```
+
+### Protocol Integration Status
+
+| Protocol | Status | Tools | API Type | Features |
+|----------|--------|-------|----------|----------|
+| ALEX | Production | 34 | REST API + Contracts | AMM, Orderbook, Launchpad |
+| Bitflow | Pending API Key | 29 | SDK + REST API | StableSwap, Keeper, DCA |
+| Arkadiko | Production | 28 | Smart Contracts | Vaults, USDA, Governance |
+| Charisma | Production | 14 | REST API + Contracts | Composable Vaults, Blaze |
+| Velar | Production | 18 | SDK + REST API | Multi-chain DEX |
+| Granite | Production | 21 | Smart Contracts | BTC Lending, Flash Loans |
+| Stacks Core | Production | 40+ | Hiro API | Contracts, Tx, PoX, NFTs |
+
+### System Architecture Stats
+
+- **Total Protocols**: 7 (6 DeFi + Stacks Core)
+- **Total Tools**: 144+
+- **Plugin System**: Modular, extensible
+- **Network Support**: Mainnet, Testnet, Devnet
+- **Wallet Support**: Private Key, Mnemonic
+- **AI Platforms**: Claude Desktop, Cursor, VS Code
+- **Testing**: Unit + Integration (Clarinet)
+- **Type Safety**: Full TypeScript with Zod validation
+
+## Technology Stack
+
+```mermaid
+graph TB
+    subgraph "Core Technologies"
+        A[TypeScript 5.x]
+        B[Node.js 20+]
+        C[Model Context Protocol]
+        D[Zod Schema Validation]
+    end
+
+    subgraph "Stacks Technologies"
+        E[Stacks.js SDK]
+        F[Clarity Smart Contracts]
+        G[Hiro API]
+        H[Clarinet Testing]
+    end
+
+    subgraph "Protocol SDKs"
+        I[Velar SDK]
+        J[Bitflow SDK]
+        K[BNS SDK]
+        L[Protocol APIs]
+    end
+
+    subgraph "Development Tools"
+        M[pnpm Package Manager]
+        N[ESLint + Prettier]
+        O[Jest Testing]
+        P[Git + GPG Signing]
+    end
+
+    A --> E
+    B --> E
+    C --> E
+    D --> E
+
+    E --> I
+    E --> J
+    E --> K
+    F --> G
+    G --> H
+
+    style A fill:#e1f5ff
+    style C fill:#ffe1f5
+    style E fill:#e1ffe1
+    style F fill:#fff4e1
+```
+
+## Key Features
+
+- **Comprehensive Protocol Coverage**: All major Stacks DeFi protocols in one unified interface
+- **Real Implementation**: No mocks, all tools interact with actual protocols and smart contracts
+- **Type Safety**: Full TypeScript with runtime Zod validation for reliability
+- **Modular Architecture**: Plugin-based system allows easy addition of new protocols
+- **Multiple Networks**: Support for mainnet, testnet, and local devnet
+- **Professional Standards**: GPG-signed commits, comprehensive documentation, no mock data
+- **AI-First Design**: Natural language interactions with Bitcoin DeFi
+- **Security Focused**: Safe transaction handling with user-controlled signing
+
 ## Version
 
 Current version: 1.0.0
 
-Last updated: October 2024
+Last updated: October 2025
+
+---
+
+## Summary
+
+**Stacks AI MCP Server** is the first comprehensive Model Context Protocol server for the Bitcoin DeFi ecosystem, built on Stacks Layer 2. With 144+ professional tools across 7 protocol integrations, it enables AI agents and applications to interact with Bitcoin DeFi through natural language interfaces.
+
+The server implements real protocol integration without mocks, uses a modular plugin architecture for extensibility, and follows professional development standards including full TypeScript type safety, GPG-signed commits, and comprehensive testing.
+
+This project demonstrates how AI can make Bitcoin DeFi accessible to everyone through conversational interfaces, bridging the gap between complex blockchain operations and natural language interactions.
