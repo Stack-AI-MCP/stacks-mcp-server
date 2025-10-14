@@ -1036,6 +1036,8 @@ This server implements the Model Context Protocol specification:
 
 ### MCP Communication Flow
 
+![Stacks AI MCP Flow](docs/images/stacksAiMcpFlow.png)
+
 ```mermaid
 sequenceDiagram
     participant Client as MCP Client<br/>(Claude/Cursor)
