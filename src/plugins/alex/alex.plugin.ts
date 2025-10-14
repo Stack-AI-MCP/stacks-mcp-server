@@ -416,13 +416,13 @@ export class AlexPlugin extends PluginBase<StacksWalletClient> {
           }),
         },
         async ({ token_x, token_y, dx, min_dy, factor }) => {
-          return alexService.prepareSwapExecution({
+          return await alexService.executeSwap({
             tokenX: token_x,
             tokenY: token_y,
             factor,
             dx,
             minDy: min_dy
-          });
+          }, walletClient);
         }
       ),
 
@@ -441,7 +441,7 @@ export class AlexPlugin extends PluginBase<StacksWalletClient> {
           }),
         },
         async ({ token_x, token_y, token_z, factor_x, factor_y, dx, min_dz }) => {
-          return alexService.prepareSwap2Hop({
+          return await alexService.executeSwap2Hop({
             tokenX: token_x,
             tokenY: token_y,
             tokenZ: token_z,
@@ -449,7 +449,7 @@ export class AlexPlugin extends PluginBase<StacksWalletClient> {
             factorY: factor_y,
             dx,
             minDz: min_dz
-          });
+          }, walletClient);
         }
       ),
 
@@ -470,7 +470,7 @@ export class AlexPlugin extends PluginBase<StacksWalletClient> {
           }),
         },
         async ({ token_x, token_y, token_z, token_w, factor_x, factor_y, factor_z, dx, min_dw }) => {
-          return alexService.prepareSwap3Hop({
+          return await alexService.executeSwap3Hop({
             tokenX: token_x,
             tokenY: token_y,
             tokenZ: token_z,
@@ -480,7 +480,7 @@ export class AlexPlugin extends PluginBase<StacksWalletClient> {
             factorZ: factor_z,
             dx,
             minDw: min_dw
-          });
+          }, walletClient);
         }
       ),
 
@@ -503,7 +503,7 @@ export class AlexPlugin extends PluginBase<StacksWalletClient> {
           }),
         },
         async ({ token_x, token_y, token_z, token_w, token_v, factor_x, factor_y, factor_z, factor_w, dx, min_dv }) => {
-          return alexService.prepareSwap4Hop({
+          return await alexService.executeSwap4Hop({
             tokenX: token_x,
             tokenY: token_y,
             tokenZ: token_z,
@@ -515,7 +515,7 @@ export class AlexPlugin extends PluginBase<StacksWalletClient> {
             factorW: factor_w,
             dx,
             minDv: min_dv
-          });
+          }, walletClient);
         }
       ),
     ];

@@ -93,14 +93,31 @@ export class VelarService {
 
   /**
    * Execute swap transaction
-   * Returns the swap contract call parameters for transaction execution
+   * Actually broadcasts the swap transaction to the blockchain
    */
-  async executeSwap(params: VelarSwapParams) {
+  async executeSwap(params: VelarSwapParams, walletClient: any) {
     // Get swap contract call parameters from SDK
     const swapCallData = await this.getSwapCallParams(params);
 
+    // Extract contract info from swap call data
+    // The SDK returns contract call data with contractAddress, contractName, functionName, functionArgs
+    const [contractAddress, contractName] = swapCallData.contractAddress
+      ? [swapCallData.contractAddress, swapCallData.contractName]
+      : this.CONTRACTS.router.split('.');
+
+    // Execute the contract call using wallet client
+    const result = await walletClient.callContract(
+      contractAddress,
+      contractName,
+      swapCallData.functionName || 'swap-exact-tokens-for-tokens',
+      swapCallData.functionArgs || [],
+      swapCallData.postConditionMode
+    );
+
     return {
-      contractCall: swapCallData,
+      txId: result.txId,
+      success: result.success,
+      error: result.error,
       swapDetails: {
         account: params.account,
         inToken: params.inToken,
@@ -108,7 +125,7 @@ export class VelarService {
         amount: params.amount,
         slippage: params.slippage || 1
       },
-      note: 'Use these contract call parameters to execute the swap transaction'
+      explorerUrl: walletClient.getExplorerUrl(result.txId)
     };
   }
 

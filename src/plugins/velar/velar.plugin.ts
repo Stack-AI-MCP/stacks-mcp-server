@@ -96,7 +96,7 @@ export class VelarPlugin extends PluginBase<StacksWalletClient> {
             outToken: out_token,
             amount,
             slippage
-          });
+          }, walletClient);
         }
       ),
 

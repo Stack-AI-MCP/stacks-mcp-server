@@ -35,10 +35,10 @@ export class GranitePlugin extends PluginBase<StacksWalletClient> {
           })
         },
         async ({ amount, pyth_price_feed_data }) => {
-          return graniteService.prepareBorrow({
+          return await graniteService.executeBorrow({
             amount,
             pythPriceFeedData: pyth_price_feed_data
-          });
+          }, walletClient);
         }
       ),
 
@@ -52,10 +52,10 @@ export class GranitePlugin extends PluginBase<StacksWalletClient> {
           })
         },
         async ({ amount, on_behalf_of }) => {
-          return graniteService.prepareRepay({
+          return await graniteService.executeRepay({
             amount,
             onBehalfOf: on_behalf_of
-          });
+          }, walletClient);
         }
       ),
 
@@ -111,10 +111,10 @@ export class GranitePlugin extends PluginBase<StacksWalletClient> {
           })
         },
         async ({ assets, recipient }) => {
-          return graniteService.prepareDeposit({
+          return await graniteService.executeDeposit({
             assets,
             recipient
-          });
+          }, walletClient);
         }
       ),
 
@@ -128,10 +128,10 @@ export class GranitePlugin extends PluginBase<StacksWalletClient> {
           })
         },
         async ({ assets, recipient }) => {
-          return graniteService.prepareWithdraw({
+          return await graniteService.executeWithdraw({
             assets,
             recipient
-          });
+          }, walletClient);
         }
       ),
 
@@ -163,9 +163,9 @@ export class GranitePlugin extends PluginBase<StacksWalletClient> {
           })
         },
         async ({ lp_tokens }) => {
-          return graniteService.prepareStake({
+          return await graniteService.executeStake({
             lpTokens: lp_tokens
-          });
+          }, walletClient);
         }
       ),
 

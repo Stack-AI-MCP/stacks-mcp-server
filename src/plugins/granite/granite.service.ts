@@ -142,41 +142,58 @@ export class GraniteService {
   // ========================= BORROWER OPERATIONS =========================
 
   /**
-   * Prepare borrow operation - deposit collateral and borrow stablecoins
+   * Execute borrow operation - deposit collateral and borrow stablecoins
    */
-  prepareBorrow(params: BorrowParams) {
+  async executeBorrow(params: BorrowParams, walletClient: any) {
     const [contractAddress, contractName] = this.CONTRACTS[this.network].borrower.split('.');
 
-    return {
+    const result = await walletClient.callContract(
       contractAddress,
       contractName,
-      functionName: 'borrow',
-      functionArgs: {
-        pythPriceFeedData: params.pythPriceFeedData || null,
-        amount: params.amount,
-        maybeUser: null // defaults to tx-sender
+      'borrow',
+      [
+        params.pythPriceFeedData || null,
+        params.amount,
+        null // maybeUser defaults to tx-sender
+      ]
+    );
+
+    return {
+      txId: result.txId,
+      success: result.success,
+      error: result.error,
+      borrowDetails: {
+        amount: params.amount
       },
-      network: this.network,
-      note: 'Borrow stablecoins against BTC collateral. Requires collateral to be deposited first.'
+      explorerUrl: walletClient.getExplorerUrl(result.txId)
     };
   }
 
   /**
-   * Prepare repay operation - repay borrowed stablecoins
+   * Execute repay operation - repay borrowed stablecoins
    */
-  prepareRepay(params: RepayParams) {
+  async executeRepay(params: RepayParams, walletClient: any) {
     const [contractAddress, contractName] = this.CONTRACTS[this.network].borrower.split('.');
 
-    return {
+    const result = await walletClient.callContract(
       contractAddress,
       contractName,
-      functionName: 'repay',
-      functionArgs: {
+      'repay',
+      [
+        params.amount,
+        params.onBehalfOf || null
+      ]
+    );
+
+    return {
+      txId: result.txId,
+      success: result.success,
+      error: result.error,
+      repayDetails: {
         amount: params.amount,
-        onBehalfOf: params.onBehalfOf || null
+        onBehalfOf: params.onBehalfOf
       },
-      network: this.network,
-      note: 'Repay borrowed stablecoins. Can repay on behalf of another user.'
+      explorerUrl: walletClient.getExplorerUrl(result.txId)
     };
   }
 
@@ -224,40 +241,58 @@ export class GraniteService {
   // ========================= LIQUIDITY PROVIDER OPERATIONS =========================
 
   /**
-   * Prepare deposit operation - supply stablecoins to earn yield
+   * Execute deposit operation - supply stablecoins to earn yield
    */
-  prepareDeposit(params: DepositParams) {
+  async executeDeposit(params: DepositParams, walletClient: any) {
     const [contractAddress, contractName] = this.CONTRACTS[this.network].liquidityProvider.split('.');
 
-    return {
+    const result = await walletClient.callContract(
       contractAddress,
       contractName,
-      functionName: 'deposit',
-      functionArgs: {
+      'deposit',
+      [
+        params.assets,
+        params.recipient
+      ]
+    );
+
+    return {
+      txId: result.txId,
+      success: result.success,
+      error: result.error,
+      depositDetails: {
         assets: params.assets,
         recipient: params.recipient
       },
-      network: this.network,
-      note: 'Deposit stablecoins to earn passive yield from borrower interest'
+      explorerUrl: walletClient.getExplorerUrl(result.txId)
     };
   }
 
   /**
-   * Prepare withdraw operation - withdraw supplied stablecoins
+   * Execute withdraw operation - withdraw supplied stablecoins
    */
-  prepareWithdraw(params: WithdrawParams) {
+  async executeWithdraw(params: WithdrawParams, walletClient: any) {
     const [contractAddress, contractName] = this.CONTRACTS[this.network].liquidityProvider.split('.');
 
-    return {
+    const result = await walletClient.callContract(
       contractAddress,
       contractName,
-      functionName: 'withdraw',
-      functionArgs: {
+      'withdraw',
+      [
+        params.assets,
+        params.recipient
+      ]
+    );
+
+    return {
+      txId: result.txId,
+      success: result.success,
+      error: result.error,
+      withdrawDetails: {
         assets: params.assets,
         recipient: params.recipient
       },
-      network: this.network,
-      note: 'Withdraw supplied assets plus earned interest'
+      explorerUrl: walletClient.getExplorerUrl(result.txId)
     };
   }
 
@@ -283,20 +318,28 @@ export class GraniteService {
   // ========================= STAKING OPERATIONS =========================
 
   /**
-   * Prepare stake operation - stake LP tokens for additional rewards
+   * Execute stake operation - stake LP tokens for additional rewards
    */
-  prepareStake(params: StakeParams) {
+  async executeStake(params: StakeParams, walletClient: any) {
     const [contractAddress, contractName] = this.CONTRACTS[this.network].staking.split('.');
 
-    return {
+    const result = await walletClient.callContract(
       contractAddress,
       contractName,
-      functionName: 'stake',
-      functionArgs: {
+      'stake',
+      [
+        params.lpTokens
+      ]
+    );
+
+    return {
+      txId: result.txId,
+      success: result.success,
+      error: result.error,
+      stakeDetails: {
         lpTokens: params.lpTokens
       },
-      network: this.network,
-      note: 'Stake LP tokens to earn additional rewards'
+      explorerUrl: walletClient.getExplorerUrl(result.txId)
     };
   }
 
