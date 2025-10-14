@@ -14,7 +14,11 @@
     "test:watch": "vitest",
     "test:clarinet": "TEST_ENV=clarinet vitest run tests/integration",
     "test:clarinet:watch": "TEST_ENV=clarinet vitest tests/integration",
-    "test:all": "pnpm test && pnpm test:clarinet"
+    "test:all": "pnpm test && pnpm test:clarinet",
+    "setup": "./setup-mcp.sh",
+    "setup:claude": "./setup-mcp.sh --claude",
+    "setup:cursor": "./setup-mcp.sh --cursor",
+    "setup:code": "./setup-mcp.sh --code"
   },
   "dependencies": {
     "@bitflowlabs/core-sdk": "^2.4.0",
@@ -31,6 +35,7 @@
     "bn.js": "^5.2.2",
     "bns-v2-sdk": "^1.0.0",
     "dotenv": "^16.3.0",
+    "reflect-metadata": "^0.2.2",
     "vitest-environment-clarinet": "^2.3.0",
     "zod": "^3.22.0",
     "zod-to-json-schema": "^3.22.0"

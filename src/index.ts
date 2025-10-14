@@ -18,7 +18,7 @@ import { mempool } from './plugins/mempool/mempool.plugin.js';
 import { stackpool } from './plugins/stackpool/stackpool.plugin.js';
 import { events } from './plugins/events/events.plugin.js';
 import { alex } from './plugins/alex/index.js';
-import { bitflow } from './plugins/bitflow/bitflow.plugin.js';
+// import { bitflow } from './plugins/bitflow/bitflow.plugin.js'; // Disabled until API keys are obtained
 import { arkadiko } from './plugins/arkadiko/index.js';
 import { charisma } from './plugins/charisma/index.js';
 import { velar } from './plugins/velar/index.js';
@@ -68,7 +68,7 @@ async function main() {
       stackpool(),    // Stacking pool delegations and burnchain rewards
       events(),       // Transaction events and detailed analysis
       alex(),         // ALEX Protocol DEX and AMM
-      bitflow(),      // Bitflow Protocol stable DEX
+      // bitflow(),      // Bitflow Protocol stable DEX - DISABLED: Requires API keys from BitFlow team
       arkadiko(),     // Arkadiko Protocol vaults, DEX, and governance
       charisma(),     // Charisma DEX and Blaze protocol
       velar(),        // Velar Protocol multi-chain DEX
@@ -133,7 +133,7 @@ async function main() {
   console.error('   • StackPool: Pool delegations and burnchain rewards');
   console.error('   • Events: Transaction events and detailed analysis');
   console.error('   • ALEX: DEX, AMM, and liquidity operations');
-  console.error('   • Bitflow: Stable DEX with keeper-based automation');
+  // console.error('   • Bitflow: Stable DEX with keeper-based automation'); // DISABLED
   console.error('   • Arkadiko: Vaults, stablecoins, DEX, and governance');
   console.error('   • Charisma: Vault-based DEX and Blaze intent protocol');
   console.error('   • Velar: Multi-chain Bitcoin Layer-2 DEX');

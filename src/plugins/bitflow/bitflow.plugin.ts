@@ -14,7 +14,19 @@ export class BitflowPlugin extends PluginBase<StacksWalletClient> {
   
   async getTools(walletClient: StacksWalletClient) {
     const network = walletClient.getNetwork() as 'mainnet' | 'testnet';
-    const bitflowService = new BitflowService(network);
+
+    // Pass environment variables explicitly to BitflowService SDK
+    const sdkConfig = {
+      BITFLOW_API_HOST: process.env.BITFLOW_API_HOST,
+      BITFLOW_API_KEY: process.env.BITFLOW_API_KEY,
+      BITFLOW_PROVIDER_ADDRESS: process.env.BITFLOW_PROVIDER_ADDRESS,
+      READONLY_CALL_API_HOST: process.env.READONLY_CALL_API_HOST,
+      READONLY_CALL_API_KEY: process.env.READONLY_CALL_API_KEY,
+      KEEPER_API_KEY: process.env.KEEPER_API_KEY,
+      KEEPER_API_HOST: process.env.KEEPER_API_HOST,
+    };
+
+    const bitflowService = new BitflowService(network, sdkConfig);
 
     return [
       // ========================= CORE SDK TOKEN OPERATIONS =========================

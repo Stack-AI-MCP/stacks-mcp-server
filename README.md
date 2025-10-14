@@ -76,41 +76,207 @@ Bitcoin-native lending protocol with sBTC collateral.
 - Governance proposals
 - 21 tools for complete lending operations
 
-## Installation
+## Quick Start
 
 ### Prerequisites
 
-- Node.js 20.x or higher
+- Claude Desktop application (or Cursor/VS Code with MCP support)
+- Node.js 18 or higher
 - pnpm package manager
-- Stacks wallet with private key or mnemonic
+- Stacks wallet (private key or mnemonic)
 
-### Setup
+### Installation
 
-1. Clone the repository:
-```bash
-git clone <repository-url>
-cd stacks-mcp-server
+1. **Clone and build the server**
+   ```bash
+   git clone <repository-url>
+   cd stacks-mcp-server
+   pnpm install
+   pnpm build
+   ```
+
+2. **Configure environment variables**
+   ```bash
+   cp .env.example .env
+   ```
+   Edit `.env` file with your wallet credentials and network preferences.
+
+3. **Automated Setup (Recommended)**
+
+   Use the automated setup script to configure your preferred AI application:
+
+   ```bash
+   # Interactive mode - choose which application to configure
+   pnpm setup
+
+   # Configure Claude Desktop only
+   pnpm setup:claude
+
+   # Configure Cursor editor only
+   pnpm setup:cursor
+
+   # Configure VS Code only
+   pnpm setup:code
+
+   # Configure multiple applications
+   ./setup-mcp.sh --claude --cursor --code
+   ```
+
+   The setup script will:
+   - Read your `.env` configuration
+   - Generate the appropriate MCP configuration
+   - Install it in the correct location for your chosen application(s)
+   - Provide restart instructions
+
+4. **Manual Configuration (Alternative)**
+
+   If you prefer manual setup, you can configure the applications directly:
+
+   **Claude Desktop**: `~/Library/Application Support/Claude/claude_desktop_config.json`
+   **Cursor Editor**: `~/.cursor/mcp.json` (global) or `.cursor/mcp.json` (project-specific)
+   **VS Code**: `~/Library/Application Support/Code/User/mcp.json` (global) or `.vscode/mcp.json` (project-specific)
+
+   The configuration format should look like:
+   ```json
+   {
+     "mcpServers": {
+       "stacks-mcp": {
+         "command": "node",
+         "args": ["/absolute/path/to/stacks-mcp-server/dist/index.js"],
+         "env": {
+           "WALLET_PRIVATE_KEY": "0x1234...",
+           "STACKS_NETWORK": "testnet",
+           "STACKS_MAINNET_API_URL": "https://api.hiro.so",
+           "STACKS_TESTNET_API_URL": "https://api.testnet.hiro.so",
+           "HIRO_API_KEY": "your_hiro_api_key"
+         }
+       }
+     }
+   }
+   ```
+
+5. **Restart your AI application**
+
+   Close and reopen Claude Desktop, Cursor, or VS Code to load the MCP server.
+
+### Environment Configuration
+
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `WALLET_PRIVATE_KEY` | Either | Stacks wallet private key (64 hex chars, with or without 0x) |
+| `WALLET_MNEMONIC` | Either | Stacks wallet mnemonic phrase (12 or 24 words) |
+| `STACKS_NETWORK` | Yes | Network selection: `mainnet`, `testnet`, or `devnet` |
+| `STACKS_MAINNET_API_URL` | No | Custom mainnet API endpoint (default: Hiro API) |
+| `STACKS_TESTNET_API_URL` | No | Custom testnet API endpoint (default: Hiro API) |
+| `HIRO_API_KEY` | No | Hiro API key for higher rate limits |
+| `BITFLOW_API_KEY` | No | BitFlow protocol API key (contact BitFlow team) |
+
+### Network Endpoints
+
+- **Testnet**: `https://api.testnet.hiro.so` (development use)
+- **Mainnet**: `https://api.hiro.so` (production use with real Bitcoin)
+- **Devnet**: `http://localhost:20443` (local development with Clarinet)
+
+## Usage Examples
+
+### Token Operations
+```
+"Transfer 100 STX to ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM"
+"Check my STX balance"
+"Send 50 ALEX tokens to alice.btc"
+"What's my USDA balance?"
 ```
 
-2. Install dependencies:
-```bash
-pnpm install
+### Smart Contracts
+```
+"Deploy a new Clarity contract from /path/to/contract.clar"
+"Call the transfer function on contract SP2C2YFP12AJZB4MABJBAJ55XECVS7E4PMMZ89YZR.arkadiko-token"
+"Get contract info for ALEX token"
+"Read the get-balance function for my address"
 ```
 
-3. Configure environment variables:
-```bash
-cp .env.example .env
+### Stacking (PoX) Operations
+```
+"Stack 1000 STX for 6 cycles"
+"Check my current stacking status"
+"What's the minimum STX to stack?"
+"Show me the current PoX cycle information"
+"Delegate 500 STX to pool SP000..."
 ```
 
-4. Edit `.env` with your configuration:
-```bash
-# Required
-STACKS_NETWORK=testnet
-WALLET_PRIVATE_KEY=your_private_key_here
-
-# Optional
-HIRO_API_KEY=your_api_key_here
+### ALEX DEX Trading
 ```
+"Swap 100 STX for ALEX on ALEX DEX"
+"Get the best price for 1000 ALEX to USDA"
+"What's the current STX/ALEX exchange rate?"
+"Add liquidity to the STX-ALEX pool"
+"Check my liquidity positions on ALEX"
+```
+
+### Arkadiko Protocol
+```
+"Open a vault with 1000 STX collateral"
+"Mint 500 USDA from my vault"
+"Check my vault health and liquidation price"
+"Repay 100 USDA to my vault"
+"Close vault #123 and withdraw collateral"
+```
+
+### Charisma Protocol
+```
+"Create a new composable vault for STX-ALEX yield"
+"Deposit 1000 STX into vault #456"
+"Check my vault balance and APY"
+"Execute Blaze intent: swap STX for best stablecoin"
+```
+
+### Velar Protocol
+```
+"Swap 500 STX for USDA on Velar"
+"Add liquidity to STX-USDA pool on Velar"
+"Check Velar pool statistics for STX pairs"
+"What's the TVL on Velar protocol?"
+```
+
+### Granite Lending
+```
+"Supply 0.1 sBTC to Granite lending pool"
+"Borrow USDA against my sBTC collateral"
+"Check my borrowing capacity on Granite"
+"Repay my USDA loan on Granite"
+```
+
+### NFT Operations
+```
+"Mint an NFT with metadata from ipfs://QmHash"
+"Transfer my NFT #123 from collection SP2C2Y... to SP3D03X..."
+"Show me all NFTs in my wallet"
+"Get NFT collection info for Megapont"
+```
+
+### Network Analytics
+```
+"Show me the latest Stacks block"
+"What's the current mempool fee rate?"
+"Get transaction details for 0x..."
+"Show network statistics for the last 24 hours"
+"Check the current Bitcoin block height"
+```
+
+## Protocol Integration Status
+
+### ✅ Fully Integrated (Production Ready)
+- **Stacks Core**: Contracts, Transactions, PoX, Tokens, NFTs, Blocks, Mempool, Events
+- **ALEX Protocol**: AMM, Orderbook, Launchpad, Liquidity Pools
+- **Arkadiko Protocol**: Vaults, USDA Stablecoin, DEX, Governance
+- **Charisma Protocol**: Composable Vaults, Blaze Intent Protocol
+- **Velar Protocol**: Multi-chain DEX, Liquidity, Price Feeds
+- **Granite Protocol**: BTC Lending, sBTC Collateral
+
+### ⏸️ Requires API Keys
+- **BitFlow Protocol**: Stable DEX operations (requires BitFlow team API access)
+  - Contact BitFlow via their documentation for API key access
+  - Can be re-enabled after obtaining keys by uncommenting in `src/index.ts`
 
 ## Configuration
 
