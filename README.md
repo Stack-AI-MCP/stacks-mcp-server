@@ -317,7 +317,7 @@ Bitcoin-native lending protocol with sBTC collateral.
 
 1. **Clone and build the server**
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/Stack-AI-MCP/stacks-mcp-server
    cd stacks-mcp-server
    pnpm install
    pnpm build
