@@ -2,6 +2,10 @@
 
 ![Stacks AI Banner](docs/images/stacksAIBanner.png)
 
+## Roadmap
+
+![Stacks AI Roadmap](docs/images/stacksAiRoadmap.png)
+
 Comprehensive Model Context Protocol (MCP) server for the Stacks Bitcoin Layer 2 DeFi ecosystem. Part of the **Stacks AI** project, providing unified access to 6 major DeFi protocols with over 148+ professional tools for lending, trading, staking, governance operations, and Clarity smart contract development.
 
 [![Protocol Coverage](https://img.shields.io/badge/Protocols-8-blue)](stacks-mcp-server/README.md#supported-protocols)
