@@ -385,16 +385,24 @@ Smart contract development toolkit for Clarity developers.
          "command": "node",
          "args": ["/absolute/path/to/stacks-mcp-server/dist/index.js"],
          "env": {
-           "WALLET_PRIVATE_KEY": "0x1234...",
+           "WALLET_PRIVATE_KEY": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
            "STACKS_NETWORK": "testnet",
            "STACKS_MAINNET_API_URL": "https://api.hiro.so",
            "STACKS_TESTNET_API_URL": "https://api.testnet.hiro.so",
-           "HIRO_API_KEY": "your_hiro_api_key"
+           "BITFLOW_API_HOST": "https://api.bitflow.finance",
+           "BITFLOW_API_KEY": "placeholder_key_request_from_bitflow_team",
+           "BITFLOW_PROVIDER_ADDRESS": "placeholder_address",
+           "READONLY_CALL_API_HOST": "https://api.bitflow.finance",
+           "READONLY_CALL_API_KEY": "placeholder_key",
+           "KEEPER_API_HOST": "https://keeper.bitflow.finance",
+           "KEEPER_API_KEY": "placeholder_key"
          }
        }
      }
    }
    ```
+
+   **Note:** For BitFlow protocol features to work, you must obtain API keys from the BitFlow team. Contact them through their official documentation for API access.
 
 5. **Restart your AI application**
 
@@ -410,7 +418,13 @@ Smart contract development toolkit for Clarity developers.
 | `STACKS_MAINNET_API_URL` | No | Custom mainnet API endpoint (default: Hiro API) |
 | `STACKS_TESTNET_API_URL` | No | Custom testnet API endpoint (default: Hiro API) |
 | `HIRO_API_KEY` | No | Hiro API key for higher rate limits |
+| `BITFLOW_API_HOST` | No | BitFlow API host (default: https://api.bitflow.finance) |
 | `BITFLOW_API_KEY` | No | BitFlow protocol API key (contact BitFlow team) |
+| `BITFLOW_PROVIDER_ADDRESS` | No | BitFlow provider address |
+| `READONLY_CALL_API_HOST` | No | BitFlow readonly call API host |
+| `READONLY_CALL_API_KEY` | No | BitFlow readonly API key |
+| `KEEPER_API_HOST` | No | BitFlow keeper API host |
+| `KEEPER_API_KEY` | No | BitFlow keeper API key |
 
 ### Network Endpoints
 
@@ -528,6 +542,16 @@ Smart contract development toolkit for Clarity developers.
 - **BitFlow Protocol**: Stable DEX operations (requires BitFlow team API access)
   - Contact BitFlow via their documentation for API key access
   - Can be re-enabled after obtaining keys by uncommenting in `src/index.ts`
+  - Required environment variables for BitFlow:
+    ```bash
+    BITFLOW_API_HOST=https://api.bitflow.finance
+    BITFLOW_API_KEY=placeholder_key_request_from_bitflow_team
+    BITFLOW_PROVIDER_ADDRESS=placeholder_address
+    READONLY_CALL_API_HOST=https://api.bitflow.finance
+    READONLY_CALL_API_KEY=placeholder_key
+    KEEPER_API_HOST=https://keeper.bitflow.finance
+    KEEPER_API_KEY=placeholder_key
+    ```
 
 ## Configuration
 
