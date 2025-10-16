@@ -46,11 +46,21 @@ async function main() {
   console.error(`📡 Network: ${network}`);
 
   // Create Stacks wallet client
-  const walletClient = new StacksWalletClient({
-    mnemonic: process.env.WALLET_MNEMONIC,
-    privateKey: process.env.WALLET_PRIVATE_KEY,
-    network,
-  });
+  let walletClient: StacksWalletClient;
+  
+  if (process.env.WALLET_PRIVATE_KEY) {
+    walletClient = new StacksWalletClient({
+      privateKey: process.env.WALLET_PRIVATE_KEY,
+      network,
+    });
+  } else if (process.env.WALLET_MNEMONIC) {
+    walletClient = await StacksWalletClient.fromMnemonic(
+      process.env.WALLET_MNEMONIC,
+      network
+    );
+  } else {
+    throw new Error('Either WALLET_MNEMONIC or WALLET_PRIVATE_KEY must be set');
+  }
 
   console.error(`💼 Wallet: ${walletClient.getAddress()}`);
 
