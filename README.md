@@ -264,7 +264,7 @@ Stable-focused DEX with keeper-based automation system.
 - Group order management
 - 29 tools for stable swaps and automation
 
-### Arkadiko Protocol
+### Arkadiko Protocol ⚠️ Mainnet Only
 Multi-collateral lending platform with stablecoin minting.
 
 **Features:**
@@ -275,6 +275,13 @@ Multi-collateral lending platform with stablecoin minting.
 - Governance proposals and voting
 - DIKO token staking
 - 28 tools for comprehensive DeFi operations
+
+**Network Availability:**
+- ✅ **Mainnet**: Fully functional at `SP2C2YFP12AJZB4MABJBAJ55XECVS7E4PMMZ89YZR`
+- ❌ **Testnet**: Not deployed on public testnet
+- ⚙️ **Local Development**: Deploy to mocknet using Arkadiko's development setup
+
+**Note**: Arkadiko operations will return an error when `STACKS_NETWORK=testnet`. For testing, either use mainnet with small amounts or deploy Arkadiko contracts to a local mocknet environment.
 
 ### Charisma Protocol
 Vault-based DEX with Blaze intent execution protocol.
@@ -472,14 +479,16 @@ Smart contract development toolkit for Clarity developers.
 "Check my liquidity positions on ALEX"
 ```
 
-### Arkadiko Protocol
+### Arkadiko Protocol (Mainnet Only)
 ```
-"Open a vault with 1000 STX collateral"
-"Mint 500 USDA from my vault"
-"Check my vault health and liquidation price"
-"Repay 100 USDA to my vault"
-"Close vault #123 and withdraw collateral"
+"Open a vault with 1000 STX collateral"  # Requires mainnet
+"Mint 500 USDA from my vault"  # Requires mainnet
+"Check my vault health and liquidation price"  # Requires mainnet
+"Repay 100 USDA to my vault"  # Requires mainnet
+"Close vault #123 and withdraw collateral"  # Requires mainnet
 ```
+
+**Note**: Set `STACKS_NETWORK=mainnet` in your `.env` to use Arkadiko tools. Testnet operations are not supported for this protocol.
 
 ### Charisma Protocol
 ```
@@ -556,6 +565,13 @@ Smart contract development toolkit for Clarity developers.
     KEEPER_API_HOST=https://keeper.bitflow.finance
     KEEPER_API_KEY=placeholder_key
     ```
+
+### ⚠️ Mainnet Only
+- **Arkadiko Protocol**: Lending and USDA stablecoin operations (only deployed on mainnet)
+  - Not available on public testnet
+  - Set `STACKS_NETWORK=mainnet` to use Arkadiko tools
+  - For local testing, deploy Arkadiko contracts to mocknet
+  - See [Arkadiko documentation](https://docs.arkadiko.finance/) for mocknet setup
 
 ## Configuration
 
@@ -1224,16 +1240,16 @@ pie title "Tool Distribution by Category"
 
 ### Protocol Integration Status
 
-| Protocol | Status | Tools | API Type | Features |
-|----------|--------|-------|----------|----------|
-| ALEX | Production | 34 | REST API + Contracts | AMM, Orderbook, Launchpad |
-| Bitflow | Pending API Key | 29 | SDK + REST API | StableSwap, Keeper, DCA |
-| Arkadiko | Production | 28 | Smart Contracts | Vaults, USDA, Governance |
-| Charisma | Production | 14 | REST API + Contracts | Composable Vaults, Blaze |
-| Velar | Production | 18 | SDK + REST API | Multi-chain DEX |
-| Granite | Production | 21 | Smart Contracts | BTC Lending, Flash Loans |
-| Stacks Core | Production | 40+ | Hiro API | Contracts, Tx, PoX, NFTs |
-| Clarinet Dev | Production | 4 | Template Generation | Project, Contracts, Tests, Config |
+| Protocol | Status | Tools | API Type | Network Support | Features |
+|----------|--------|-------|----------|-----------------|----------|
+| ALEX | Production | 34 | REST API + Contracts | Mainnet/Testnet | AMM, Orderbook, Launchpad |
+| Bitflow | Pending API Key | 29 | SDK + REST API | Mainnet/Testnet | StableSwap, Keeper, DCA |
+| Arkadiko | **Mainnet Only** | 28 | Smart Contracts | **Mainnet Only** | Vaults, USDA, Governance |
+| Charisma | Production | 14 | REST API + Contracts | Mainnet/Testnet | Composable Vaults, Blaze |
+| Velar | Production | 18 | SDK + REST API | Mainnet/Testnet | Multi-chain DEX |
+| Granite | Production | 21 | Smart Contracts | Mainnet/Testnet | BTC Lending, Flash Loans |
+| Stacks Core | Production | 40+ | Hiro API | Mainnet/Testnet/Devnet | Contracts, Tx, PoX, NFTs |
+| Clarinet Dev | Production | 4 | Template Generation | All Networks | Project, Contracts, Tests, Config |
 
 ### System Architecture Stats
 
