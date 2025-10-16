@@ -2,10 +2,10 @@
 
 ![Stacks AI Banner](docs/images/stacksAIBanner.png)
 
-Comprehensive Model Context Protocol (MCP) server for the Stacks Bitcoin Layer 2 DeFi ecosystem. Part of the **Stacks AI** project, providing unified access to 6 major DeFi protocols with over 144+ professional tools for lending, trading, staking, and governance operations.
+Comprehensive Model Context Protocol (MCP) server for the Stacks Bitcoin Layer 2 DeFi ecosystem. Part of the **Stacks AI** project, providing unified access to 6 major DeFi protocols with over 148+ professional tools for lending, trading, staking, governance operations, and Clarity smart contract development.
 
-[![Protocol Coverage](https://img.shields.io/badge/Protocols-7-blue)](stacks-mcp-server/README.md#supported-protocols)
-[![Tools](https://img.shields.io/badge/Tools-144+-green)](stacks-mcp-server/README.md#tool-categories)
+[![Protocol Coverage](https://img.shields.io/badge/Protocols-8-blue)](stacks-mcp-server/README.md#supported-protocols)
+[![Tools](https://img.shields.io/badge/Tools-148+-green)](stacks-mcp-server/README.md#tool-categories)
 [![Networks](https://img.shields.io/badge/Networks-Mainnet%20%7C%20Testnet%20%7C%20Devnet-orange)](stacks-mcp-server/README.md#network-endpoints)
 [![MCP](https://img.shields.io/badge/MCP-Compliant-purple)](stacks-mcp-server/README.md#mcp-protocol-compliance)
 
@@ -62,8 +62,8 @@ graph TB
     end
 
     subgraph "Backend Layer"
-        G[Stacks AI MCP Server<br/>144+ Tools]
-        H[Plugin System<br/>6 DeFi Protocols]
+        G[Stacks AI MCP Server<br/>148+ Tools]
+        H[Plugin System<br/>6 DeFi Protocols + Dev Tools]
         I[Wallet Authentication<br/>Transaction Signing]
     end
 
@@ -121,6 +121,7 @@ graph TB
         G5[Velar Plugin<br/>18 Tools]
         G6[Granite Plugin<br/>21 Tools]
         G7[Stacks Core Plugin<br/>40+ Tools]
+        G8[Clarinet Dev Plugin<br/>4 Tools]
     end
 
     subgraph "Blockchain Layer"
@@ -144,6 +145,7 @@ graph TB
     D --> G5
     D --> G6
     D --> G7
+    D --> G8
 
     G1 --> H2
     G1 --> H1
@@ -303,6 +305,17 @@ Bitcoin-native lending protocol with sBTC collateral.
 - Flash loans for advanced strategies
 - Governance proposals
 - 21 tools for complete lending operations
+
+### Clarinet Development Tools
+Smart contract development toolkit for Clarity developers.
+
+**Features:**
+- Complete Clarinet project generation
+- SIP-009 NFT contract templates
+- SIP-010 Fungible Token contract templates
+- Comprehensive test suite generation
+- Network configuration for mainnet/testnet/devnet
+- 4 tools for contract development workflow
 
 ## Quick Start
 
@@ -491,6 +504,15 @@ Bitcoin-native lending protocol with sBTC collateral.
 "Check the current Bitcoin block height"
 ```
 
+### Smart Contract Development
+```
+"Generate a new Clarinet project for my NFT marketplace"
+"Create a SIP-010 token contract called MyToken"
+"Generate unit tests for the counter contract"
+"Show me how to configure for testnet deployment"
+"Create a SIP-009 NFT contract with metadata"
+```
+
 ## Protocol Integration Status
 
 ### ✅ Fully Integrated (Production Ready)
@@ -500,6 +522,7 @@ Bitcoin-native lending protocol with sBTC collateral.
 - **Charisma Protocol**: Composable Vaults, Blaze Intent Protocol
 - **Velar Protocol**: Multi-chain DEX, Liquidity, Price Feeds
 - **Granite Protocol**: BTC Lending, sBTC Collateral
+- **Clarinet Development Tools**: Project Generation, Contract Templates, Test Suites, Network Configuration
 
 ### ⏸️ Requires API Keys
 - **BitFlow Protocol**: Stable DEX operations (requires BitFlow team API access)
@@ -590,6 +613,7 @@ src/plugins/
 ├── charisma/      # Charisma Protocol integration
 ├── velar/         # Velar Protocol integration
 ├── granite/       # Granite Protocol integration
+├── clarinet/      # Clarinet development tools
 ├── contracts/     # Smart contract operations
 ├── transactions/  # Transaction management
 ├── pox/           # PoX stacking operations
@@ -1167,6 +1191,7 @@ pie title "Tool Distribution by Category"
     "Granite Protocol" : 21
     "Charisma Protocol" : 14
     "Core Operations" : 40
+    "Clarinet Dev Tools" : 4
 ```
 
 ### Protocol Integration Status
@@ -1180,11 +1205,12 @@ pie title "Tool Distribution by Category"
 | Velar | Production | 18 | SDK + REST API | Multi-chain DEX |
 | Granite | Production | 21 | Smart Contracts | BTC Lending, Flash Loans |
 | Stacks Core | Production | 40+ | Hiro API | Contracts, Tx, PoX, NFTs |
+| Clarinet Dev | Production | 4 | Template Generation | Project, Contracts, Tests, Config |
 
 ### System Architecture Stats
 
-- **Total Protocols**: 7 (6 DeFi + Stacks Core)
-- **Total Tools**: 144+
+- **Total Protocols**: 8 (6 DeFi + Stacks Core + Clarinet Dev)
+- **Total Tools**: 148+
 - **Plugin System**: Modular, extensible
 - **Network Support**: Mainnet, Testnet, Devnet
 - **Wallet Support**: Private Key, Mnemonic
@@ -1262,7 +1288,7 @@ Last updated: October 2025
 
 ## Summary
 
-**Stacks AI MCP Server** is the first comprehensive Model Context Protocol server for the Bitcoin DeFi ecosystem, built on Stacks Layer 2. With 144+ professional tools across 7 protocol integrations, it enables AI agents and applications to interact with Bitcoin DeFi through natural language interfaces.
+**Stacks AI MCP Server** is the first comprehensive Model Context Protocol server for the Bitcoin DeFi ecosystem, built on Stacks Layer 2. With 148+ professional tools across 8 protocol integrations (including Clarity smart contract development tools), it enables AI agents and applications to interact with Bitcoin DeFi and build Stacks applications through natural language interfaces.
 
 The server implements real protocol integration without mocks, uses a modular plugin architecture for extensibility, and follows professional development standards including full TypeScript type safety, GPG-signed commits, and comprehensive testing.
 
