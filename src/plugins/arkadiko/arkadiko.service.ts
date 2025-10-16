@@ -102,7 +102,13 @@ export class ArkadikoService {
 
   constructor(config: ArkadikoConfig = {}) {
     this.networkName = config.network || 'mainnet';
+    // Arkadiko is only deployed on mainnet - no public testnet deployment
     this.contractAddress = config.contractAddress || 'SP2C2YFP12AJZB4MABJBAJ55XECVS7E4PMMZ89YZR';
+
+    // Warn if trying to use testnet
+    if (this.networkName === 'testnet' && !config.contractAddress) {
+      console.warn('⚠️  Arkadiko is only deployed on mainnet. Testnet operations will fail unless using a local mocknet deployment.');
+    }
   }
 
   // ========================= VAULT OPERATIONS =========================
