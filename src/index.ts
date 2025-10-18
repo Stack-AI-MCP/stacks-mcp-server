@@ -24,6 +24,7 @@ import { charisma } from './plugins/charisma/index.js';
 import { velar } from './plugins/velar/index.js';
 import { granite } from './plugins/granite/index.js';
 import { clarinet } from './plugins/clarinet/index.js';
+import { tradeport } from './plugins/tradeport/index.js';
 
 // Load environment variables
 dotenv.config();
@@ -85,6 +86,7 @@ async function main() {
       velar(),        // Velar Protocol multi-chain DEX
       granite(),      // Granite Protocol BTC lending
       clarinet(),     // Clarinet development tools for Clarity contracts
+      tradeport(),    // TradePort NFT marketplace data and analytics
     ],
   });
 
@@ -151,6 +153,7 @@ async function main() {
   console.error('   • Velar: Multi-chain Bitcoin Layer-2 DEX');
   console.error('   • Granite: BTC-native lending with sBTC collateral');
   console.error('   • Clarinet: Development tools for Clarity smart contracts');
+  console.error('   • TradePort: NFT marketplace data, analytics, and trading');
 }
 
 main().catch((error) => {
