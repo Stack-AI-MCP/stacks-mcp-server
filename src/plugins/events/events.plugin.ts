@@ -173,31 +173,29 @@ export class EventsPlugin extends PluginBase<StacksWalletClient> {
       createTool(
         {
           name: 'get_contract_log_events',
-          description: 'Get smart contract log events with filtering',
+          description: 'Get smart contract events for a specific contract',
           parameters: z.object({
-            contract_id: z.string().optional().describe('Filter by contract ID'),
-            topic: z.string().optional().describe('Filter by log topic'),
+            contract_id: z.string().describe('Contract ID (address.contract-name) - REQUIRED'),
             limit: z.number().optional().default(20).describe('Number of events to return'),
             offset: z.number().optional().default(0).describe('Event offset for pagination'),
+            unanchored: z.boolean().optional().default(false).describe('Include unanchored events'),
           }),
         },
-        async ({ contract_id, topic, limit, offset }) => {
+        async ({ contract_id, limit, offset, unanchored }) => {
           const params = new URLSearchParams({
             limit: limit.toString(),
             offset: offset.toString(),
+            unanchored: unanchored.toString(),
           });
-          
-          if (contract_id) params.append('contract_id', contract_id);
-          if (topic) params.append('topic', topic);
-          
-          const response = await fetch(`${apiService.getApiUrl(network)}/extended/v1/tx/events?type=smart_contract_log&${params}`, {
+
+          const response = await fetch(`${apiService.getApiUrl(network)}/extended/v1/contract/${contract_id}/events?${params}`, {
             headers: { 'Accept': 'application/json' }
           });
-          
+
           if (!response.ok) {
-            throw new Error(`Failed to get contract log events: ${response.statusText}`);
+            throw new Error(`Failed to get contract events: ${response.statusText}`);
           }
-          
+
           return await response.json();
         }
       ),
@@ -206,32 +204,39 @@ export class EventsPlugin extends PluginBase<StacksWalletClient> {
       createTool(
         {
           name: 'get_stx_transfer_events',
-          description: 'Get STX transfer, mint, and burn events',
+          description: 'Get STX transfer events for a specific address',
           parameters: z.object({
-            sender: z.string().optional().describe('Filter by sender address'),
-            recipient: z.string().optional().describe('Filter by recipient address'),
-            limit: z.number().optional().default(20).describe('Number of events to return'),
-            offset: z.number().optional().default(0).describe('Event offset for pagination'),
+            address: z.string().describe('Stacks address - REQUIRED'),
+            limit: z.number().optional().default(20).describe('Number of transactions to return'),
+            offset: z.number().optional().default(0).describe('Transaction offset for pagination'),
           }),
         },
-        async ({ sender, recipient, limit, offset }) => {
+        async ({ address, limit, offset }) => {
           const params = new URLSearchParams({
             limit: limit.toString(),
             offset: offset.toString(),
           });
-          
-          if (sender) params.append('sender', sender);
-          if (recipient) params.append('recipient', recipient);
-          
-          const response = await fetch(`${apiService.getApiUrl(network)}/extended/v1/tx/events?type=stx_asset&${params}`, {
+
+          const response = await fetch(`${apiService.getApiUrl(network)}/extended/v1/address/${address}/transactions?${params}`, {
             headers: { 'Accept': 'application/json' }
           });
-          
+
           if (!response.ok) {
             throw new Error(`Failed to get STX transfer events: ${response.statusText}`);
           }
-          
-          return await response.json();
+
+          const data = await response.json();
+
+          // Filter for STX transfer events
+          const stxTransfers = data.results?.filter((tx: any) =>
+            tx.tx_type === 'token_transfer' ||
+            (tx.events && tx.events.some((e: any) => e.event_type === 'stx_asset'))
+          ) || [];
+
+          return {
+            ...data,
+            results: stxTransfers,
+          };
         }
       ),
     ];
